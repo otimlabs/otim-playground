@@ -10,6 +10,7 @@ Before running any examples, you'll need to get your developer keys. See the [Ge
 
 ### TypeScript Server-Side
 
-| Example | Description |
-|---------|-------------|
-| [basic-settlement](./typescript/server-side/basic-settlement) | Create, retrieve, and list settlement orchestrations |
+| Example | Description | SDK Version |
+|---------|-------------|-------------|
+| [basic-settlement](./typescript/server-side/basic-settlement) | Create, retrieve, and list settlement orchestrations | `@otim/sdk-server` ^0.0.6 |
+| [settle-polygon-usdce-to-usdc](./typescript/server-side/settle-polygon-usdce-to-usdc) | Create a settlement on Polygon accepting both USDC and USDC.e tokens | `@otim/sdk-server` ^0.0.6 |
