@@ -6,7 +6,7 @@ A collection of TypeScript server-side examples using the Otim SDK.
 
 ### basic-settlement
 
-Create, retrieve, and list settlement orchestrations.
+Create, retrieve, and list settlement orchestrations. This example creates a settlement on Base that accepts native ETH, USDC, and USDT from multiple chains (Ethereum, Base, Arbitrum, Optimism, and Polygon), settling to USDC on Base.
 
 **Commands:**
 - `pnpm dev:create` - Create a new settlement orchestration
