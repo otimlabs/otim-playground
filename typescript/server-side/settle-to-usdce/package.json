@@ -1,0 +1,37 @@
+{
+  "name": "server-side",
+  "version": "1.0.1",
+  "description": "simple otim sdk server-side example: create settlement orchestrations with the otim server client",
+  "main": "index.js",
+  "type": "module",
+  "private": true,
+  "scripts": {
+    "start": "node --import tsx/esm src/index.ts",
+    "dev": "tsx src/index.ts",
+    "build": "tsc",
+    "lint": "eslint .",
+    "lint:fix": "eslint . --fix"
+  },
+  "keywords": [
+    "otim",
+    "sdk",
+    "server",
+    "settlement",
+    "orchestration",
+    "blockchain"
+  ],
+  "author": "",
+  "license": "Apache-2.0",
+  "devDependencies": {
+    "@types/node": "^24.1.0",
+    "dotenv": "^17.2.1",
+    "eslint": "^9.29.0",
+    "prettier": "^3.6.2",
+    "tsx": "^4.20.3",
+    "typescript": "^5.8.3"
+  },
+  "dependencies": {
+    "@otim/sdk-server": "^0.0.6",
+    "viem": "^2.39.3"
+  }
+}
