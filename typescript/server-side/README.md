@@ -21,3 +21,11 @@ Create a settlement on Polygon accepting both USDC and USDC.e tokens, settling t
 - `pnpm dev:create` - Create a new settlement orchestration
 - `pnpm dev:getDetails <request_id>` - Get details for a specific orchestration
 
+### settle-to-usdce
+
+Create a settlement orchestration that settles to USDC.e on Polygon, accepting tokens from multiple chains (Base and Polygon).
+
+**Commands:**
+- `pnpm dev:create` - Create a new settlement orchestration
+- `pnpm dev:getDetails <request_id>` - Get details for a specific orchestration
+
