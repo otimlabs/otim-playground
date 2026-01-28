@@ -2,7 +2,7 @@
 
 A collection of TypeScript server-side examples using the Otim SDK.
 
-**SDK Version:** [`@otim/sdk-server`](https://www.npmjs.com/package/@otim/sdk-server) v0.0.6
+**SDK Version:** [`@otim/sdk-server`](https://www.npmjs.com/package/@otim/sdk-server) 0.0.6
 
 ## Examples
 
