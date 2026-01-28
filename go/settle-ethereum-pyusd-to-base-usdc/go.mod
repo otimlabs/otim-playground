@@ -5,7 +5,7 @@ go 1.25
 require (
 	github.com/ethereum/go-ethereum v1.16.7
 	github.com/joho/godotenv v1.5.1
-	github.com/otimlabs/otim-go-sdk v0.0.4
+	github.com/otimlabs/otim-go-sdk v0.0.6
 )
 
 require (

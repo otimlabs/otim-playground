@@ -78,18 +78,20 @@ func createSettlement(ctx context.Context) error {
 	// Build settlement orchestration request
 	log.Println("Building settlement orchestration request...")
 	buildRequest := &client.BuildSettlementOrchestrationRequest{
-		AcceptedTokens: map[client.ChainID][]common.Address{
-			ethereumMainnetChainID: {
-				common.HexToAddress(pyUSDAddress), // Accept pyUSD on Ethereum mainnet
+		Params: &client.SettlementParams{
+			AcceptedTokens: map[client.ChainID][]common.Address{
+				ethereumMainnetChainID: {
+					common.HexToAddress(pyUSDAddress), // Accept pyUSD on Ethereum mainnet
+				},
+				baseChainID: {
+					common.HexToAddress(usdcAddress), // Accept USDC on Base
+				},
 			},
-			baseChainID: {
-				common.HexToAddress(usdcAddress), // Accept USDC on Base
-			},
+			SettlementChainId: baseChainID,
+			SettlementToken:   common.HexToAddress(usdcAddress), // Settle to USDC on Base
+			SettlementAmount:  hexutil.Big(*settlementAmount),
+			RecipientAddress:  common.HexToAddress(recipientAddress),
 		},
-		SettlementChain:  baseChainID,
-		SettlementToken:  common.HexToAddress(usdcAddress), // Settle to USDC on Base
-		SettlementAmount: hexutil.Big(*settlementAmount),
-		RecipientAddress: common.HexToAddress(recipientAddress),
 	}
 
 	// Call BuildSettlementOrchestration API
