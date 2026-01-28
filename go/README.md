@@ -2,6 +2,8 @@
 
 A collection of Go examples using the Otim Go SDK.
 
+**SDK Version:** [`github.com/otimlabs/otim-go-sdk`](https://github.com/otimlabs/otim-go-sdk) v0.0.6
+
 ## Examples
 
 ### settle-ethereum-pyusd-to-base-usdc
