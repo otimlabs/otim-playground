@@ -1,5 +1,4 @@
 import {
-  type Chain,
   chains,
   createOtimServerClient,
   prepareSettlement,
@@ -14,8 +13,7 @@ async function initializeClient() {
     privateKey: process.env.OTIM_PRIVATE_KEY! as `0x${string}`,
     publicKey: process.env.OTIM_PUBLIC_KEY!,
     apiKey: process.env.OTIM_API_KEY,
-    environment: (process.env.OTIM_ENVIRONMENT as 'sandbox' | 'production') || 'production',
-    chains: [chains.base as Chain, chains.polygon as Chain],
+    environment: "production",
   });
 
   await client.init();
@@ -47,17 +45,10 @@ async function create() {
         "0x2791Bca1f2de4661ED88A30C99A7a9449Aa84174",
       ],
     },
-    amount: 10,
+    amount: BigInt(10),
   });
 
-  const result = await client.orchestration.create({
-    ...payload,
-    metadata: {
-      ...payload.metadata,
-      type: "PaymentRequest",
-      source: "Manual",
-    },
-  });
+  const result = await client.orchestration.create(payload);
 
   console.log(JSON.stringify(result, null, 2));
 }

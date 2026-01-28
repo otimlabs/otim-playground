@@ -10,7 +10,6 @@ async function initializeClient() {
     publicKey: process.env.OTIM_PUBLIC_KEY!,
     apiKey: process.env.OTIM_API_KEY,
     environment: process.env.OTIM_ENVIRONMENT as 'sandbox' | 'production',
-    chains: [chains.polygon] as any
   });
 
   await client.init();
@@ -20,13 +19,13 @@ async function initializeClient() {
 async function create() {
   const client = await initializeClient();
   const settlement = prepareSettlement({
-    amount: 1,
+    amount: BigInt(1),
     chainId: chains.polygon.id,
     token: '0x3c499c542cEF5E3811e1192ce70d8cC03d5c3359', // usdc on polygon
     recipient: process.env.RECIPIENT_ADDRESS! as `0x${string}`,
     acceptedTokens: {
       [chains.polygon.id]: [
-        '0x3c499c542cEF5E3811e1192ce70d8cC03d5c3359', 
+        '0x3c499c542cEF5E3811e1192ce70d8cC03d5c3359',
         '0x2791Bca1f2de4661ED88A30C99A7a9449Aa84174' // usdc.e on polygon
       ]
     },
