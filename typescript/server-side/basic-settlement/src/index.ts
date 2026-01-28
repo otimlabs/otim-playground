@@ -9,8 +9,7 @@ async function initializeClient() {
     privateKey: process.env.OTIM_PRIVATE_KEY! as `0x${string}`,
     publicKey: process.env.OTIM_PUBLIC_KEY!,
     apiKey: process.env.OTIM_API_KEY,
-    environment: process.env.OTIM_ENVIRONMENT as 'sandbox' | 'production',
-    chains: [chains.base] as any
+    environment: "production",
   });
 
   await client.init();
@@ -20,7 +19,7 @@ async function initializeClient() {
 async function create() {
   const client = await initializeClient();
   const settlement = prepareSettlement({
-    amount: 1,
+    amount: BigInt(1),
     chainId: chains.base.id,
     token: '0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913', // usdc on base
     recipient: process.env.RECIPIENT_ADDRESS! as `0x${string}`,
