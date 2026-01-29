@@ -1,7 +1,7 @@
 {
-  "name": "server-side",
-  "version": "1.0.1",
-  "description": "simple otim sdk server-side example: create settlement orchestrations with the otim server client",
+  "name": "settle-usdc-into-vault",
+  "version": "1.0.0",
+  "description": "otim sdk server-side example: create vault deposit settlement orchestrations with the otim server client",
   "main": "index.js",
   "type": "module",
   "private": true,
@@ -18,7 +18,8 @@
     "server",
     "settlement",
     "orchestration",
-    "blockchain"
+    "blockchain",
+    "vault"
   ],
   "author": "",
   "license": "Apache-2.0",
