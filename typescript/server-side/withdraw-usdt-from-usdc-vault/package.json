@@ -1,7 +1,7 @@
 {
-  "name": "server-side",
-  "version": "1.0.1",
-  "description": "simple otim sdk server-side example: create settlement orchestrations with the otim server client",
+  "name": "withdraw-usdt-from-usdc-vault",
+  "version": "1.0.0",
+  "description": "otim sdk server-side example: withdraw from a vault and settle to a recipient",
   "main": "index.js",
   "type": "module",
   "private": true,
@@ -18,7 +18,9 @@
     "server",
     "settlement",
     "orchestration",
-    "blockchain"
+    "blockchain",
+    "vault",
+    "withdraw"
   ],
   "author": "",
   "license": "Apache-2.0",

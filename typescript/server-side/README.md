@@ -2,7 +2,7 @@
 
 A collection of TypeScript server-side examples using the Otim SDK.
 
-**SDK Version:** [`@otim/sdk-server`](https://www.npmjs.com/package/@otim/sdk-server) 0.0.12
+**SDK Version:** [`@otim/sdk-server`](https://www.npmjs.com/package/@otim/sdk-server) 0.0.14
 
 ## Examples
 
@@ -31,3 +31,18 @@ Create a settlement orchestration that settles to USDC.e on Polygon, accepting t
 - `pnpm dev:create` - Create a new settlement orchestration
 - `pnpm dev:getDetails <request_id>` - Get details for a specific orchestration
 
+### settle-usdc-into-vault
+
+Create a vault deposit settlement orchestration that collects USDC on Base and deposits it into an ERC-4626 vault.
+
+**Commands:**
+- `pnpm dev:create` - Create a new vault deposit settlement orchestration
+- `pnpm dev:getDetails <request_id>` - Get details for a specific orchestration
+
+### withdraw-usdt-from-usdc-vault
+
+Withdraw USDC from an ERC-4626 vault on Base and settle as USDT to a recipient.
+
+**Commands:**
+- `pnpm dev:create` - Create a new vault withdraw settlement orchestration
+- `pnpm dev:getDetails <request_id>` - Get details for a specific orchestration
