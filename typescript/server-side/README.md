@@ -38,3 +38,11 @@ Create a vault deposit settlement orchestration that collects USDC on Base and d
 **Commands:**
 - `pnpm dev:create` - Create a new vault deposit settlement orchestration
 - `pnpm dev:getDetails <request_id>` - Get details for a specific orchestration
+
+### withdraw-usdt-from-usdc-vault
+
+Withdraw USDC from an ERC-4626 vault on Base and settle as USDT to a recipient.
+
+**Commands:**
+- `pnpm dev:create` - Create a new vault withdraw settlement orchestration
+- `pnpm dev:getDetails <request_id>` - Get details for a specific orchestration

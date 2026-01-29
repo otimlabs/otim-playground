@@ -1,0 +1,38 @@
+{
+  "name": "withdraw-usdt-from-usdc-vault",
+  "version": "1.0.0",
+  "description": "otim sdk server-side example: withdraw from a vault and settle to a recipient",
+  "main": "index.js",
+  "type": "module",
+  "private": true,
+  "scripts": {
+    "build": "tsc",
+    "start": "node dist/index.js",
+    "dev": "tsx src/index.ts",
+    "dev:create": "tsx src/index.ts create",
+    "dev:getDetails": "tsx src/index.ts getDetails"
+  },
+  "keywords": [
+    "otim",
+    "sdk",
+    "server",
+    "settlement",
+    "orchestration",
+    "blockchain",
+    "vault",
+    "withdraw"
+  ],
+  "author": "",
+  "license": "Apache-2.0",
+  "devDependencies": {
+    "@types/node": "^24.1.0",
+    "dotenv": "^17.2.1",
+    "prettier": "^3.6.2",
+    "tsx": "^4.20.3",
+    "typescript": "^5.8.3"
+  },
+  "dependencies": {
+    "@otim/sdk-server": "^0.0.14",
+    "viem": "^2.39.3"
+  }
+}
