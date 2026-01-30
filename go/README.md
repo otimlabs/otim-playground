@@ -2,7 +2,7 @@
 
 A collection of Go examples using the Otim Go SDK.
 
-**SDK Version:** [`github.com/otimlabs/otim-go-sdk`](https://github.com/otimlabs/otim-go-sdk) 0.0.6
+**SDK Version:** [`github.com/otimlabs/otim-go-sdk`](https://github.com/otimlabs/otim-go-sdk) 0.0.7
 
 ## Examples
 
