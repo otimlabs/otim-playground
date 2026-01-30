@@ -5,7 +5,7 @@ import { base } from "viem/chains";
 /**
  * Default chain ID for the application (Base Mainnet).
  */
-export const DEFAULT_CHAIN_ID = 1;
+export const DEFAULT_CHAIN_ID = base.id;
 
 /**
  * Wagmi configuration for wallet connections.

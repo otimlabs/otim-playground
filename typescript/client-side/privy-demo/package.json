@@ -2,6 +2,11 @@
   "name": "privy-demo",
   "version": "0.1.0",
   "private": true,
+  "pnpm": {
+    "overrides": {
+      "@ethereumjs/util": "^9.1.0"
+    }
+  },
   "scripts": {
     "dev": "next dev",
     "build": "next build",
@@ -21,6 +26,7 @@
   },
   "devDependencies": {
     "@tailwindcss/postcss": "^4",
+    "@types/bn.js": "^5.2.0",
     "@types/node": "^20",
     "@types/react": "^19",
     "@types/react-dom": "^19",

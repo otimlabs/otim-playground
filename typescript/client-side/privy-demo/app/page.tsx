@@ -262,10 +262,10 @@ function StepIndicator({
     <div className="flex flex-col items-center gap-1">
       <div
         className={`flex h-8 w-8 items-center justify-center rounded-full text-sm font-medium transition-colors ${isComplete
-            ? "bg-green-500 text-white"
-            : isActive
-              ? "bg-violet-600 text-white"
-              : "bg-zinc-200 text-zinc-500 dark:bg-zinc-700 dark:text-zinc-400"
+          ? "bg-green-500 text-white"
+          : isActive
+            ? "bg-violet-600 text-white"
+            : "bg-zinc-200 text-zinc-500 dark:bg-zinc-700 dark:text-zinc-400"
           }`}
       >
         {isComplete ? (
@@ -278,8 +278,8 @@ function StepIndicator({
       </div>
       <span
         className={`text-xs ${isComplete || isActive
-            ? "text-zinc-900 dark:text-zinc-100"
-            : "text-zinc-500 dark:text-zinc-400"
+          ? "text-zinc-900 dark:text-zinc-100"
+          : "text-zinc-500 dark:text-zinc-400"
           }`}
       >
         {label}

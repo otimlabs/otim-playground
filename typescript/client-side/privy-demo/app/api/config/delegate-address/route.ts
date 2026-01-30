@@ -41,10 +41,10 @@ export async function GET(
     const api = await createServerAPIClient();
     const response = await api.config.getDelegateAddress(result.data);
 
-    if (!response.success) {
+    if (!response.data) {
       return NextResponse.json(
-        { error: response.error?.message ?? "Failed to get delegate address" },
-        { status: response.error?.status ?? 500 },
+        { error: "Failed to get delegate address" },
+        { status: 500 },
       );
     }
 

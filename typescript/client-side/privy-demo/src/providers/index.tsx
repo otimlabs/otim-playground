@@ -19,7 +19,7 @@ import { wagmiConfig } from "./wagmi";
 const privyConfig = {
   appearance: {
     theme: "light" as const,
-    accentColor: "#8B5CF6",
+    accentColor: "#8B5CF6" as const,
   },
   embeddedWallets: {
     createOnLogin: "users-without-wallets" as const,
