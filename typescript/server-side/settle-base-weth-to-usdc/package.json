@@ -1,0 +1,21 @@
+{
+  "name": "settle-base-weth-to-usdc",
+  "type": "module",
+  "scripts": {
+    "build": "tsc",
+    "start": "node dist/index.js",
+    "dev": "tsx src/index.ts",
+    "dev:create": "tsx src/index.ts create",
+    "dev:getDetails": "tsx src/index.ts getDetails",
+    "dev:list": "tsx src/index.ts list"
+  },
+  "dependencies": {
+    "@otim/sdk-server": "^0.0.14",
+    "dotenv": "^16.4.5"
+  },
+  "devDependencies": {
+    "@types/node": "^20.11.0",
+    "tsx": "^4.7.0",
+    "typescript": "^5.3.3"
+  }
+}
