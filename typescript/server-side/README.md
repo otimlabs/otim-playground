@@ -15,6 +15,15 @@ Create, retrieve, and list settlement orchestrations. This example creates a set
 - `pnpm dev:getDetails <request_id>` - Get details for a specific orchestration
 - `pnpm dev:list` - List all orchestrations
 
+### settle-base-weth-to-usdc
+
+Create a settlement on Base that accepts WETH and outputs USDC to a specified recipient. This is useful for off-ramping flows where you need to send USDC to a liquidation address (e.g., Bridge.xyz).
+
+**Commands:**
+- `pnpm dev:create` - Create a new settlement orchestration
+- `pnpm dev:getDetails <request_id>` - Get details for a specific orchestration
+- `pnpm dev:list` - List all orchestrations
+
 ### settle-polygon-usdce-to-usdc
 
 Create a settlement on Polygon accepting both USDC and USDC.e tokens, settling to USDC.
