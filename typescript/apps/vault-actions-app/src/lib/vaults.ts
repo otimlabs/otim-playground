@@ -5,6 +5,7 @@ export interface VaultConfig {
   protocol: string;
   chainId: number;
   chainName: string;
+  network: string;
   underlyingToken: {
     address: `0x${string}`;
     symbol: string;
@@ -66,6 +67,7 @@ function transformVault(v: VaultsFyiVault): VaultConfig {
     protocol: v.protocol.name,
     chainId: v.network.chainId,
     chainName: NETWORK_DISPLAY_NAMES[v.network.name] ?? v.network.name,
+    network: v.network.name,
     underlyingToken: {
       address: v.asset.address as `0x${string}`,
       symbol: v.asset.symbol,
@@ -93,6 +95,8 @@ export async function fetchVaults(): Promise<VaultConfig[]> {
   url.searchParams.append("allowedNetworks", "mainnet");
   url.searchParams.append("allowedAssets", "USDC");
   url.searchParams.append("allowedAssets", "USDT");
+  // Only show ERC-4626 compatible vaults
+  url.searchParams.set("onlyTransactional", "true");
 
   const res = await fetch(url.toString(), {
     headers: {
@@ -120,4 +124,36 @@ export async function fetchVaults(): Promise<VaultConfig[]> {
   }
 
   return items.map(transformVault);
+}
+
+export async function fetchVault(
+  network: string,
+  address: string
+): Promise<VaultConfig> {
+  const apiKey = process.env.VAULTS_FYI_API_KEY;
+
+  if (!apiKey) {
+    throw new Error("VAULTS_FYI_API_KEY environment variable is not set");
+  }
+
+  const res = await fetch(
+    `https://api.vaults.fyi/v2/detailed-vaults/${network}/${address}`,
+    {
+      headers: {
+        "x-api-key": apiKey,
+        Accept: "application/json",
+      },
+      next: { revalidate: 300 },
+    }
+  );
+
+  if (!res.ok) {
+    const text = await res.text();
+    throw new Error(`vaults.fyi API error (${res.status}): ${text}`);
+  }
+
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const json: any = await res.json();
+  const vault: VaultsFyiVault = json.data ?? json;
+  return transformVault(vault);
 }
