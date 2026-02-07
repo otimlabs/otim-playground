@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import Link from "next/link";
 import type { VaultConfig } from "@/lib/vaults";
 
 type ActionType = "deposit" | "withdraw" | "migrate" | null;
@@ -228,20 +229,23 @@ export default function Home() {
                 key={`${vault.chainId}-${vault.address}`}
                 className="p-4 rounded-lg border border-zinc-800 bg-zinc-900/50 hover:border-zinc-700 transition-colors"
               >
-                <div className="flex items-start justify-between gap-4">
-                  <div className="min-w-0 flex-1">
-                    <div className="flex items-center gap-2 mb-1">
-                      <h3 className="font-medium text-zinc-100 truncate">
+                <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+                  <div className="min-w-0">
+                    <div className="flex items-center gap-2 mb-1 flex-wrap">
+                      <Link
+                        href={`/${vault.network}/${vault.address}`}
+                        className="font-medium text-zinc-100 hover:text-white transition-colors"
+                      >
                         {vault.name}
-                      </h3>
-                      <span className="text-xs px-2 py-0.5 rounded bg-zinc-800 text-zinc-400 shrink-0">
+                      </Link>
+                      <span className="text-xs px-2 py-0.5 rounded bg-zinc-800 text-zinc-400">
                         {vault.chainName}
                       </span>
-                      <span className="text-xs px-2 py-0.5 rounded bg-zinc-800/50 text-zinc-500 shrink-0">
+                      <span className="text-xs px-2 py-0.5 rounded bg-zinc-800/50 text-zinc-500">
                         {vault.protocol}
                       </span>
                     </div>
-                    <div className="flex items-center gap-4 text-sm text-zinc-400">
+                    <div className="flex flex-wrap items-center gap-x-4 gap-y-1 text-sm text-zinc-400">
                       <span>
                         {vault.underlyingToken.symbol}
                       </span>
@@ -256,7 +260,7 @@ export default function Home() {
                       </span>
                     </div>
                   </div>
-                  <div className="flex gap-2 shrink-0">
+                  <div className="flex gap-2">
                     <button
                       onClick={() => openAction("deposit", vault)}
                       disabled={!walletAddress}
