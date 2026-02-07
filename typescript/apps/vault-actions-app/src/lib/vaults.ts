@@ -48,12 +48,6 @@ interface VaultsFyiVault {
   };
 }
 
-interface VaultsFyiResponse {
-  data: VaultsFyiVault[];
-  itemsOnPage: number;
-  nextPage?: number;
-}
-
 const NETWORK_DISPLAY_NAMES: Record<string, string> = {
   mainnet: "Ethereum",
   base: "Base",
@@ -63,7 +57,7 @@ const NETWORK_DISPLAY_NAMES: Record<string, string> = {
 };
 
 function transformVault(v: VaultsFyiVault): VaultConfig {
-  const apy7d = v.apy["7day"]?.total ?? v.apy["1day"]?.total ?? 0;
+  const apy7d = v.apy?.["7day"]?.total ?? v.apy?.["1day"]?.total ?? 0;
 
   return {
     address: v.address as `0x${string}`,
@@ -89,31 +83,41 @@ export async function fetchVaults(): Promise<VaultConfig[]> {
     throw new Error("VAULTS_FYI_API_KEY environment variable is not set");
   }
 
-  const params = new URLSearchParams({
-    allowedNetworks: "base,mainnet",
-    allowedAssets: "USDC,USDT",
-    sortBy: "tvl",
-    sortOrder: "desc",
-    perPage: "10",
-    minTvl: "10000000",
-  });
+  const url = new URL("https://api.vaults.fyi/v2/detailed-vaults");
+  url.searchParams.set("sortBy", "tvl");
+  url.searchParams.set("sortOrder", "desc");
+  url.searchParams.set("perPage", "10");
+  url.searchParams.set("minTvl", "10000000");
+  // Pass array params individually
+  url.searchParams.append("allowedNetworks", "base");
+  url.searchParams.append("allowedNetworks", "mainnet");
+  url.searchParams.append("allowedAssets", "USDC");
+  url.searchParams.append("allowedAssets", "USDT");
 
-  const res = await fetch(
-    `https://api.vaults.fyi/v2/detailed-vaults?${params.toString()}`,
-    {
-      headers: {
-        "x-api-key": apiKey,
-        Accept: "application/json",
-      },
-      next: { revalidate: 300 }, // cache for 5 minutes
-    }
-  );
+  const res = await fetch(url.toString(), {
+    headers: {
+      "x-api-key": apiKey,
+      Accept: "application/json",
+    },
+    next: { revalidate: 300 },
+  });
 
   if (!res.ok) {
     const text = await res.text();
     throw new Error(`vaults.fyi API error (${res.status}): ${text}`);
   }
 
-  const json: VaultsFyiResponse = await res.json();
-  return json.data.map(transformVault);
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const json: any = await res.json();
+
+  // Handle possible response shapes: { data: [...] } or direct array
+  const items: VaultsFyiVault[] = json.data ?? json.items ?? json;
+
+  if (!Array.isArray(items) || items.length === 0) {
+    throw new Error(
+      `No vaults returned from vaults.fyi. Response keys: ${JSON.stringify(Object.keys(json))}`
+    );
+  }
+
+  return items.map(transformVault);
 }
