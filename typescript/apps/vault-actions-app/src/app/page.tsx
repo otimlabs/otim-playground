@@ -46,11 +46,16 @@ export default function Home() {
     async function loadVaults() {
       try {
         const res = await fetch("/api/vaults");
+        const data = await res.json();
         if (!res.ok) {
-          const data = await res.json();
           throw new Error(data.error || "Failed to fetch vaults");
         }
-        const data = await res.json();
+        if (data.error) {
+          throw new Error(data.error);
+        }
+        if (!Array.isArray(data) || data.length === 0) {
+          throw new Error("No vaults returned");
+        }
         setVaults(data);
       } catch (err) {
         setVaultsError(err instanceof Error ? err.message : "Failed to load vaults");
