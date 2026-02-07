@@ -1,4 +1,4 @@
-import { fetchVault } from "@/lib/vaults";
+import { fetchVault, isErc4626Compliant } from "@/lib/vaults";
 import { notFound } from "next/navigation";
 import VaultDetail from "./vault-detail";
 
@@ -34,5 +34,7 @@ export default async function VaultPage({ params }: PageProps) {
     notFound();
   }
 
-  return <VaultDetail vault={vault} />;
+  const isErc4626 = await isErc4626Compliant(vault.chainId, vault.address);
+
+  return <VaultDetail vault={vault} isErc4626={isErc4626} />;
 }

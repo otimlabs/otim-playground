@@ -89,10 +89,26 @@ const CHAIN_BY_ID: Record<number, Chain> = Object.fromEntries(
 );
 
 /**
- * Verify a contract implements core ERC-4626 methods on-chain.
- * Calls asset() and convertToAssets(0) — if either reverts, it's not 4626.
+ * Curated vault list — add or remove entries here.
+ * fetchVaults() resolves each via vaults.fyi API (or RPC fallback).
  */
-async function isErc4626Compliant(
+const CURATED_VAULTS: { network: string; address: `0x${string}` }[] = [
+  // Ethereum
+  { network: "mainnet", address: "0xBEEF01735c132Ada46AA9aA9f5990cf29d6145c7" }, // Steakhouse USDC (Morpho)
+  { network: "mainnet", address: "0xbEef047a543E45807105E51A8BBEFCc5950fcfBa" }, // Steakhouse USDT (Morpho)
+  { network: "mainnet", address: "0x8eB67A509616cd6A7c1B3c8C21D48FF57df3d458" }, // Gauntlet USDC Core (Morpho)
+  { network: "mainnet", address: "0xd63070114470f685b75B74D60EEc7c1113d33a3D" }, // Usual Boosted USDC (Morpho)
+  { network: "mainnet", address: "0x890A5122Aa1dA30fEC4286DE7904Ff808F0bd74A" }, // MSY vault
+  // Base
+  { network: "base", address: "0xc1256Ae5FF1cf2719D4937adb3bbCCab2E00A2Ca" }, // Moonwell Flagship USDC
+  { network: "base", address: "0x23479229e52Ab6aaD312D0B03DF9F33B46753B5e" }, // Moonwell Flagship USDT
+];
+
+/**
+ * Verify a contract implements core ERC-4626 methods on-chain.
+ * Calls asset() and convertToAssets(1) — if either reverts, it's not 4626.
+ */
+export async function isErc4626Compliant(
   chainId: number,
   address: `0x${string}`
 ): Promise<boolean> {
@@ -141,59 +157,18 @@ function transformVault(v: VaultsFyiVault): VaultConfig {
   };
 }
 
+/**
+ * Load the curated vault list. Each vault is fetched via API/RPC in parallel.
+ * Failed lookups are silently skipped.
+ */
 export async function fetchVaults(): Promise<VaultConfig[]> {
-  const apiKey = process.env.VAULTS_FYI_API_KEY;
-
-  if (!apiKey) {
-    throw new Error("VAULTS_FYI_API_KEY environment variable is not set");
-  }
-
-  const url = new URL("https://api.vaults.fyi/v2/detailed-vaults");
-  url.searchParams.set("sortBy", "tvl");
-  url.searchParams.set("sortOrder", "desc");
-  url.searchParams.set("perPage", "20");
-  url.searchParams.set("minTvl", "10000000");
-  // Pass array params individually
-  url.searchParams.append("allowedNetworks", "base");
-  url.searchParams.append("allowedNetworks", "mainnet");
-  url.searchParams.append("allowedAssets", "USDC");
-  url.searchParams.append("allowedAssets", "USDT");
-  // Only show ERC-4626 compatible vaults
-  url.searchParams.set("onlyTransactional", "true");
-
-  const res = await fetch(url.toString(), {
-    headers: {
-      "x-api-key": apiKey,
-      Accept: "application/json",
-    },
-    next: { revalidate: 300 },
-  });
-
-  if (!res.ok) {
-    const text = await res.text();
-    throw new Error(`vaults.fyi API error (${res.status}): ${text}`);
-  }
-
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const json: any = await res.json();
-
-  // Handle possible response shapes: { data: [...] } or direct array
-  const items: VaultsFyiVault[] = json.data ?? json.items ?? json;
-
-  if (!Array.isArray(items) || items.length === 0) {
-    throw new Error(
-      `No vaults returned from vaults.fyi. Response keys: ${JSON.stringify(Object.keys(json))}`
-    );
-  }
-
-  const vaults = items.map(transformVault);
-
-  // Verify ERC-4626 compliance on-chain (asset() + convertToAssets())
-  const checks = await Promise.all(
-    vaults.map((v) => isErc4626Compliant(v.chainId, v.address))
+  const results = await Promise.allSettled(
+    CURATED_VAULTS.map((v) => fetchVault(v.network, v.address))
   );
 
-  return vaults.filter((_, i) => checks[i]);
+  return results
+    .filter((r): r is PromiseFulfilledResult<VaultConfig> => r.status === "fulfilled")
+    .map((r) => r.value);
 }
 
 /**
