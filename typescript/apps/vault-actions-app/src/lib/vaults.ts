@@ -111,7 +111,7 @@ async function isErc4626Compliant(
         address,
         abi: erc4626Abi,
         functionName: "convertToAssets",
-        args: [BigInt(0)],
+        args: [BigInt(1)],
       }),
     ]);
     return true;
@@ -151,7 +151,7 @@ export async function fetchVaults(): Promise<VaultConfig[]> {
   const url = new URL("https://api.vaults.fyi/v2/detailed-vaults");
   url.searchParams.set("sortBy", "tvl");
   url.searchParams.set("sortOrder", "desc");
-  url.searchParams.set("perPage", "10");
+  url.searchParams.set("perPage", "20");
   url.searchParams.set("minTvl", "10000000");
   // Pass array params individually
   url.searchParams.append("allowedNetworks", "base");
