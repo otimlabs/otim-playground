@@ -31,7 +31,7 @@
     "typescript": "^5.8.3"
   },
   "dependencies": {
-    "@otim/sdk-server": "^0.0.14",
+    "@otim/sdk-server": "^0.0.15",
     "viem": "^2.39.3"
   }
 }

@@ -10,7 +10,7 @@
     "dev:list": "tsx src/index.ts list"
   },
   "dependencies": {
-    "@otim/sdk-server": "^0.0.14",
+    "@otim/sdk-server": "^0.0.15",
     "dotenv": "^16.4.5"
   },
   "devDependencies": {
