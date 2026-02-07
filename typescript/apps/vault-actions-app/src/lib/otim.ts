@@ -13,14 +13,16 @@ import type {
 type SupportedChainId =
   PrepareVaultDepositSettlementParams["vaultChainId"];
 
-// Accepted tokens per chain (stablecoins)
-const ACCEPTED_TOKENS: Record<number, `0x${string}`[]> = {
+// Stablecoins per chain — used to populate acceptedTokens so the SDK
+// can route through the vault's chain even when paying from a different chain.
+const STABLECOINS_BY_CHAIN: Record<number, `0x${string}`[]> = {
   [1]: [
     "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48", // USDC
     "0xdAC17F958D2ee523a2206206994597C13D831ec7", // USDT
   ],
   [8453]: [
     "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913", // USDC
+    "0xfde4C96c8593536E31F229EA8f37b2ADa2699bb2", // USDT
   ],
 };
 
@@ -52,10 +54,23 @@ export async function deposit(params: {
     Math.round(parseFloat(params.depositAmount) * 10 ** params.decimals)
   );
 
+  // Build acceptedTokens: must include the payment chain AND the vault chain
+  const acceptedTokens: Record<number, `0x${string}`[]> = {
+    [params.paymentChainId]: [params.paymentToken],
+  };
+  // SDK requires the vault's chain in acceptedTokens for routing
+  if (params.vaultChainId !== params.paymentChainId) {
+    acceptedTokens[params.vaultChainId] =
+      STABLECOINS_BY_CHAIN[params.vaultChainId] ?? [params.vaultUnderlyingToken];
+  } else {
+    // Same chain — merge stablecoins with the selected payment token
+    const chainStables = STABLECOINS_BY_CHAIN[params.vaultChainId] ?? [];
+    const merged = [...new Set([params.paymentToken, ...chainStables])];
+    acceptedTokens[params.vaultChainId] = merged;
+  }
+
   const payload = prepareVaultDepositSettlement({
-    acceptedTokens: {
-      [params.paymentChainId]: [params.paymentToken],
-    },
+    acceptedTokens,
     vaultChainId: params.vaultChainId as SupportedChainId,
     vaultAddress: params.vaultAddress,
     vaultUnderlyingToken: params.vaultUnderlyingToken,
