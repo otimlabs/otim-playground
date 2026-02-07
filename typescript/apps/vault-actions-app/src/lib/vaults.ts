@@ -17,6 +17,7 @@ export interface VaultConfig {
   };
   apy: number;
   tvlUsd: number;
+  url?: string;
 }
 
 interface VaultsFyiAsset {
@@ -88,21 +89,34 @@ const CHAIN_BY_ID: Record<number, Chain> = Object.fromEntries(
   Object.values(CHAINS).map((c) => [c.id, c])
 );
 
+interface CuratedVault {
+  network: string;
+  address: `0x${string}`;
+  url: string;
+  nameOverride?: string;
+}
+
 /**
  * Curated vault list — add or remove entries here.
  * fetchVaults() resolves each via vaults.fyi API (or RPC fallback).
  */
-const CURATED_VAULTS: { network: string; address: `0x${string}` }[] = [
-  // Ethereum
-  { network: "mainnet", address: "0xBEEF01735c132Ada46AA9aA9f5990cf29d6145c7" }, // Steakhouse USDC (Morpho)
-  { network: "mainnet", address: "0xbEef047a543E45807105E51A8BBEFCc5950fcfBa" }, // Steakhouse USDT (Morpho)
-  { network: "mainnet", address: "0x8eB67A509616cd6A7c1B3c8C21D48FF57df3d458" }, // Gauntlet USDC Core (Morpho)
-  { network: "mainnet", address: "0xd63070114470f685b75B74D60EEc7c1113d33a3D" }, // Usual Boosted USDC (Morpho)
-  { network: "mainnet", address: "0x890A5122Aa1dA30fEC4286DE7904Ff808F0bd74A" }, // MSY vault
-  // Base
-  { network: "base", address: "0xc1256Ae5FF1cf2719D4937adb3bbCCab2E00A2Ca" }, // Moonwell Flagship USDC
-  { network: "base", address: "0x23479229e52Ab6aaD312D0B03DF9F33B46753B5e" }, // Moonwell Flagship USDT
+const CURATED_VAULTS: CuratedVault[] = [
+  // Ethereum — Morpho
+  { network: "mainnet", address: "0xBEEF01735c132Ada46AA9aA9f5990cf29d6145c7", url: "https://app.morpho.org/vault?vault=0xBEEF01735c132Ada46AA9aA9f5990cf29d6145c7&network=mainnet" },
+  { network: "mainnet", address: "0xbEef047a543E45807105E51A8BBEFCc5950fcfBa", url: "https://app.morpho.org/vault?vault=0xbEef047a543E45807105E51A8BBEFCc5950fcfBa&network=mainnet" },
+  { network: "mainnet", address: "0x8eB67A509616cd6A7c1B3c8C21D48FF57df3d458", url: "https://app.morpho.org/vault?vault=0x8eB67A509616cd6A7c1B3c8C21D48FF57df3d458&network=mainnet" },
+  { network: "mainnet", address: "0xd63070114470f685b75B74D60EEc7c1113d33a3D", url: "https://app.morpho.org/vault?vault=0xd63070114470f685b75B74D60EEc7c1113d33a3D&network=mainnet" },
+  // Ethereum — Main Street Yield
+  { network: "mainnet", address: "0x890A5122Aa1dA30fEC4286DE7904Ff808F0bd74A", url: "https://mainstreet.finance/", nameOverride: "Main Street Yield" },
+  // Base — Moonwell
+  { network: "base", address: "0xc1256Ae5FF1cf2719D4937adb3bbCCab2E00A2Ca", url: "https://moonwell.fi/vaults/flagship-usdc" },
+  { network: "base", address: "0x23479229e52Ab6aaD312D0B03DF9F33B46753B5e", url: "https://moonwell.fi/vaults/flagship-usdt" },
 ];
+
+/** Lookup curated metadata by lowercase address */
+const CURATED_BY_ADDRESS = new Map<string, CuratedVault>(
+  CURATED_VAULTS.map((v) => [v.address.toLowerCase(), v])
+);
 
 /**
  * Verify a contract implements core ERC-4626 methods on-chain.
@@ -157,9 +171,20 @@ function transformVault(v: VaultsFyiVault): VaultConfig {
   };
 }
 
+/** Merge curated metadata (url, name override) into a VaultConfig */
+function applyCuratedMetadata(vault: VaultConfig): VaultConfig {
+  const curated = CURATED_BY_ADDRESS.get(vault.address.toLowerCase());
+  if (!curated) return vault;
+  return {
+    ...vault,
+    name: curated.nameOverride ?? vault.name,
+    url: curated.url,
+  };
+}
+
 /**
  * Load the curated vault list. Each vault is fetched via API/RPC in parallel.
- * Failed lookups are silently skipped.
+ * Failed lookups are silently skipped. Results sorted by APY descending.
  */
 export async function fetchVaults(): Promise<VaultConfig[]> {
   const results = await Promise.allSettled(
@@ -168,7 +193,8 @@ export async function fetchVaults(): Promise<VaultConfig[]> {
 
   return results
     .filter((r): r is PromiseFulfilledResult<VaultConfig> => r.status === "fulfilled")
-    .map((r) => r.value);
+    .map((r) => r.value)
+    .sort((a, b) => b.apy - a.apy);
 }
 
 /**
@@ -179,13 +205,15 @@ export async function fetchVault(
   network: string,
   address: string
 ): Promise<VaultConfig> {
+  let vault: VaultConfig;
   // Try vaults.fyi API first
   try {
-    return await fetchVaultFromApi(network, address);
+    vault = await fetchVaultFromApi(network, address);
   } catch {
     // Not on vaults.fyi — try reading the contract directly
-    return await fetchVaultFromRpc(network, address);
+    vault = await fetchVaultFromRpc(network, address);
   }
+  return applyCuratedMetadata(vault);
 }
 
 async function fetchVaultFromApi(
