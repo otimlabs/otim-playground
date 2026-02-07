@@ -9,18 +9,15 @@ export async function POST(request: Request) {
       vaultAddress,
       vaultChainId,
       vaultUnderlyingToken,
-      withdrawAmount,
       recipientAddress,
       settlementToken,
       settlementChainId,
-      decimals,
     } = body;
 
     if (
       !vaultAddress ||
       !vaultChainId ||
       !vaultUnderlyingToken ||
-      !withdrawAmount ||
       !recipientAddress ||
       !settlementToken ||
       !settlementChainId
@@ -35,11 +32,9 @@ export async function POST(request: Request) {
       vaultAddress,
       vaultChainId,
       vaultUnderlyingToken,
-      withdrawAmount,
       recipientAddress,
       settlementToken,
       settlementChainId,
-      decimals: decimals ?? 6,
     });
 
     return NextResponse.json(result);

@@ -9,9 +9,7 @@ export async function POST(request: Request) {
       vaultAddress,
       vaultChainId,
       vaultUnderlyingToken,
-      depositAmount,
       recipientAddress,
-      decimals,
       paymentChainId,
       paymentToken,
     } = body;
@@ -20,7 +18,6 @@ export async function POST(request: Request) {
       !vaultAddress ||
       !vaultChainId ||
       !vaultUnderlyingToken ||
-      !depositAmount ||
       !recipientAddress ||
       !paymentChainId ||
       !paymentToken
@@ -35,9 +32,7 @@ export async function POST(request: Request) {
       vaultAddress,
       vaultChainId,
       vaultUnderlyingToken,
-      depositAmount,
       recipientAddress,
-      decimals: decimals ?? 6,
       paymentChainId,
       paymentToken,
     });

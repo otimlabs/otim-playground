@@ -27,7 +27,6 @@ export default function VaultDetail({ vault, isErc4626 }: { vault: VaultConfig; 
   const [walletAddress, setWalletAddress] = useState("");
   const [walletInput, setWalletInput] = useState("");
   const [actionType, setActionType] = useState<ActionType>("deposit");
-  const [amount, setAmount] = useState("");
   const [paymentOptionId, setPaymentOptionId] = useState(PAYMENT_OPTIONS[0].id);
   const [loading, setLoading] = useState(false);
   const [result, setResult] = useState<ResultState | null>(null);
@@ -69,7 +68,7 @@ export default function VaultDetail({ vault, isErc4626 }: { vault: VaultConfig; 
   };
 
   const handleSubmit = async () => {
-    if (!walletAddress || !amount) return;
+    if (!walletAddress) return;
     setLoading(true);
     setResult(null);
 
@@ -84,9 +83,7 @@ export default function VaultDetail({ vault, isErc4626 }: { vault: VaultConfig; 
           vaultAddress: vault.address,
           vaultChainId: vault.chainId,
           vaultUnderlyingToken: vault.underlyingToken.address,
-          depositAmount: amount,
           recipientAddress: walletAddress,
-          decimals: vault.underlyingToken.decimals,
           paymentChainId: paymentOpt.chainId,
           paymentToken: paymentOpt.tokenAddress,
         };
@@ -96,11 +93,9 @@ export default function VaultDetail({ vault, isErc4626 }: { vault: VaultConfig; 
           vaultAddress: vault.address,
           vaultChainId: vault.chainId,
           vaultUnderlyingToken: vault.underlyingToken.address,
-          withdrawAmount: amount,
           recipientAddress: walletAddress,
           settlementToken: vault.underlyingToken.address,
           settlementChainId: vault.chainId,
-          decimals: vault.underlyingToken.decimals,
         };
       } else if (actionType === "migrate" && destVault) {
         endpoint = "/api/migrate";
@@ -111,9 +106,7 @@ export default function VaultDetail({ vault, isErc4626 }: { vault: VaultConfig; 
           destVaultAddress: destVault.address,
           destVaultChainId: destVault.chainId,
           destVaultUnderlyingToken: destVault.underlyingToken.address,
-          withdrawAmount: amount,
           recipientAddress: walletAddress,
-          decimals: vault.underlyingToken.decimals,
         };
       }
 
@@ -142,7 +135,6 @@ export default function VaultDetail({ vault, isErc4626 }: { vault: VaultConfig; 
 
   const canSubmit =
     walletAddress &&
-    amount &&
     !loading &&
     (actionType !== "migrate" || destVault);
 
@@ -334,24 +326,6 @@ export default function VaultDetail({ vault, isErc4626 }: { vault: VaultConfig; 
               )}
             </div>
           )}
-
-          {/* Amount */}
-          <div className="mb-4">
-            <label className="block text-sm font-medium text-zinc-300 mb-2">
-              Amount ({actionType === "deposit"
-                ? (PAYMENT_OPTIONS.find((o) => o.id === paymentOptionId) ?? PAYMENT_OPTIONS[0]).tokenSymbol
-                : vault.underlyingToken.symbol})
-            </label>
-            <input
-              type="number"
-              value={amount}
-              onChange={(e) => setAmount(e.target.value)}
-              placeholder="0.00"
-              min="0"
-              step="any"
-              className="w-full bg-zinc-800 border border-zinc-700 rounded-md px-3 py-2 text-sm font-mono text-zinc-100 placeholder-zinc-600 focus:outline-none focus:ring-1 focus:ring-zinc-600"
-            />
-          </div>
 
           {/* Result */}
           {result && (
