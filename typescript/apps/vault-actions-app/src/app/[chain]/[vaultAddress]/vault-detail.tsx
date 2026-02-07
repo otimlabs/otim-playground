@@ -312,7 +312,9 @@ export default function VaultDetail({ vault }: { vault: VaultConfig }) {
           {/* Amount */}
           <div className="mb-4">
             <label className="block text-sm font-medium text-zinc-300 mb-2">
-              Amount ({vault.underlyingToken.symbol})
+              Amount ({actionType === "deposit"
+                ? (PAYMENT_OPTIONS.find((o) => o.id === paymentOptionId) ?? PAYMENT_OPTIONS[0]).tokenSymbol
+                : vault.underlyingToken.symbol})
             </label>
             <input
               type="number"

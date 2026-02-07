@@ -399,7 +399,9 @@ export default function Home() {
             {/* Amount input */}
             <div className="mb-4">
               <label className="block text-sm font-medium text-zinc-300 mb-2">
-                Amount ({action.vault.underlyingToken.symbol})
+                Amount ({action.type === "deposit"
+                  ? (PAYMENT_OPTIONS.find((o) => o.id === paymentOptionId) ?? PAYMENT_OPTIONS[0]).tokenSymbol
+                  : action.vault.underlyingToken.symbol})
               </label>
               <input
                 type="number"
