@@ -75,12 +75,50 @@ const erc4626Abi = [
   { name: "symbol", type: "function", inputs: [], outputs: [{ name: "", type: "string" }], stateMutability: "view" },
   { name: "asset", type: "function", inputs: [], outputs: [{ name: "", type: "address" }], stateMutability: "view" },
   { name: "totalAssets", type: "function", inputs: [], outputs: [{ name: "", type: "uint256" }], stateMutability: "view" },
+  { name: "convertToAssets", type: "function", inputs: [{ name: "shares", type: "uint256" }], outputs: [{ name: "", type: "uint256" }], stateMutability: "view" },
+  { name: "convertToShares", type: "function", inputs: [{ name: "assets", type: "uint256" }], outputs: [{ name: "", type: "uint256" }], stateMutability: "view" },
 ] as const;
 
 const erc20Abi = [
   { name: "symbol", type: "function", inputs: [], outputs: [{ name: "", type: "string" }], stateMutability: "view" },
   { name: "decimals", type: "function", inputs: [], outputs: [{ name: "", type: "uint8" }], stateMutability: "view" },
 ] as const;
+
+const CHAIN_BY_ID: Record<number, Chain> = Object.fromEntries(
+  Object.values(CHAINS).map((c) => [c.id, c])
+);
+
+/**
+ * Verify a contract implements core ERC-4626 methods on-chain.
+ * Calls asset() and convertToAssets(0) — if either reverts, it's not 4626.
+ */
+async function isErc4626Compliant(
+  chainId: number,
+  address: `0x${string}`
+): Promise<boolean> {
+  const chain = CHAIN_BY_ID[chainId];
+  if (!chain) return false;
+
+  const client = createPublicClient({ chain, transport: http() });
+  try {
+    await Promise.all([
+      client.readContract({
+        address,
+        abi: erc4626Abi,
+        functionName: "asset",
+      }),
+      client.readContract({
+        address,
+        abi: erc4626Abi,
+        functionName: "convertToAssets",
+        args: [BigInt(0)],
+      }),
+    ]);
+    return true;
+  } catch {
+    return false;
+  }
+}
 
 function transformVault(v: VaultsFyiVault): VaultConfig {
   const apy7d = v.apy?.["7day"]?.total ?? v.apy?.["1day"]?.total ?? 0;
@@ -148,7 +186,14 @@ export async function fetchVaults(): Promise<VaultConfig[]> {
     );
   }
 
-  return items.map(transformVault);
+  const vaults = items.map(transformVault);
+
+  // Verify ERC-4626 compliance on-chain (asset() + convertToAssets())
+  const checks = await Promise.all(
+    vaults.map((v) => isErc4626Compliant(v.chainId, v.address))
+  );
+
+  return vaults.filter((_, i) => checks[i]);
 }
 
 /**
