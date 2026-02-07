@@ -3,6 +3,7 @@
 import { useState, useEffect } from "react";
 import Link from "next/link";
 import type { VaultConfig } from "@/lib/vaults";
+import { PAYMENT_OPTIONS } from "@/lib/constants";
 
 type ActionType = "deposit" | "withdraw" | "migrate";
 
@@ -27,6 +28,7 @@ export default function VaultDetail({ vault }: { vault: VaultConfig }) {
   const [walletInput, setWalletInput] = useState("");
   const [actionType, setActionType] = useState<ActionType>("deposit");
   const [amount, setAmount] = useState("");
+  const [paymentOptionId, setPaymentOptionId] = useState(PAYMENT_OPTIONS[0].id);
   const [loading, setLoading] = useState(false);
   const [result, setResult] = useState<ResultState | null>(null);
 
@@ -76,6 +78,7 @@ export default function VaultDetail({ vault }: { vault: VaultConfig }) {
       let body: Record<string, unknown> = {};
 
       if (actionType === "deposit") {
+        const paymentOpt = PAYMENT_OPTIONS.find((o) => o.id === paymentOptionId) ?? PAYMENT_OPTIONS[0];
         endpoint = "/api/deposit";
         body = {
           vaultAddress: vault.address,
@@ -84,6 +87,8 @@ export default function VaultDetail({ vault }: { vault: VaultConfig }) {
           depositAmount: amount,
           recipientAddress: walletAddress,
           decimals: vault.underlyingToken.decimals,
+          paymentChainId: paymentOpt.chainId,
+          paymentToken: paymentOpt.tokenAddress,
         };
       } else if (actionType === "withdraw") {
         endpoint = "/api/withdraw";
@@ -251,6 +256,26 @@ export default function VaultDetail({ vault }: { vault: VaultConfig }) {
 
         {/* Action form */}
         <div className="p-4 rounded-lg border border-zinc-800 bg-zinc-900/50">
+          {/* Deposit: payment token selector */}
+          {actionType === "deposit" && (
+            <div className="mb-4">
+              <label className="block text-sm font-medium text-zinc-300 mb-2">
+                Pay With
+              </label>
+              <select
+                value={paymentOptionId}
+                onChange={(e) => setPaymentOptionId(e.target.value)}
+                className="w-full bg-zinc-800 border border-zinc-700 rounded-md px-3 py-2 text-sm text-zinc-100 focus:outline-none focus:ring-1 focus:ring-zinc-600"
+              >
+                {PAYMENT_OPTIONS.map((opt) => (
+                  <option key={opt.id} value={opt.id}>
+                    {opt.label}
+                  </option>
+                ))}
+              </select>
+            </div>
+          )}
+
           {/* Migrate: destination vault */}
           {actionType === "migrate" && (
             <div className="mb-4">

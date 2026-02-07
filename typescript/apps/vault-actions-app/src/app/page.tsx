@@ -3,6 +3,7 @@
 import { useState, useEffect } from "react";
 import Link from "next/link";
 import type { VaultConfig } from "@/lib/vaults";
+import { PAYMENT_OPTIONS } from "@/lib/constants";
 
 type ActionType = "deposit" | "withdraw" | "migrate" | null;
 
@@ -39,9 +40,18 @@ export default function Home() {
   const [walletInput, setWalletInput] = useState("");
   const [action, setAction] = useState<ActionState>({ type: null, vault: null });
   const [amount, setAmount] = useState("");
+  const [paymentOptionId, setPaymentOptionId] = useState(PAYMENT_OPTIONS[0].id);
   const [destVault, setDestVault] = useState<VaultConfig | null>(null);
   const [loading, setLoading] = useState(false);
   const [result, setResult] = useState<ResultState | null>(null);
+
+  useEffect(() => {
+    const saved = localStorage.getItem("walletAddress");
+    if (saved) {
+      setWalletAddress(saved);
+      setWalletInput(saved);
+    }
+  }, []);
 
   useEffect(() => {
     async function loadVaults() {
@@ -70,6 +80,7 @@ export default function Home() {
   const handleSaveWallet = () => {
     if (walletInput.match(/^0x[a-fA-F0-9]{40}$/)) {
       setWalletAddress(walletInput);
+      localStorage.setItem("walletAddress", walletInput);
     }
   };
 
@@ -97,6 +108,7 @@ export default function Home() {
       let body: Record<string, unknown> = {};
 
       if (action.type === "deposit") {
+        const paymentOpt = PAYMENT_OPTIONS.find((o) => o.id === paymentOptionId) ?? PAYMENT_OPTIONS[0];
         endpoint = "/api/deposit";
         body = {
           vaultAddress: action.vault.address,
@@ -105,6 +117,8 @@ export default function Home() {
           depositAmount: amount,
           recipientAddress: walletAddress,
           decimals: action.vault.underlyingToken.decimals,
+          paymentChainId: paymentOpt.chainId,
+          paymentToken: paymentOpt.tokenAddress,
         };
       } else if (action.type === "withdraw") {
         endpoint = "/api/withdraw";
@@ -187,6 +201,7 @@ export default function Home() {
                 onClick={() => {
                   setWalletAddress("");
                   setWalletInput("");
+                  localStorage.removeItem("walletAddress");
                 }}
                 className="text-xs text-zinc-500 hover:text-zinc-300 transition-colors shrink-0"
               >
@@ -333,6 +348,26 @@ export default function Home() {
                 {action.vault.chainName} &middot; {action.vault.protocol} &middot; {action.vault.underlyingToken.symbol} &middot; {formatApy(action.vault.apy)} APY
               </div>
             </div>
+
+            {/* Deposit: payment token selector */}
+            {action.type === "deposit" && (
+              <div className="mb-4">
+                <label className="block text-sm font-medium text-zinc-300 mb-2">
+                  Pay With
+                </label>
+                <select
+                  value={paymentOptionId}
+                  onChange={(e) => setPaymentOptionId(e.target.value)}
+                  className="w-full bg-zinc-800 border border-zinc-700 rounded-md px-3 py-2 text-sm text-zinc-100 focus:outline-none focus:ring-1 focus:ring-zinc-600"
+                >
+                  {PAYMENT_OPTIONS.map((opt) => (
+                    <option key={opt.id} value={opt.id}>
+                      {opt.label}
+                    </option>
+                  ))}
+                </select>
+              </div>
+            )}
 
             {/* Migrate: destination vault selector */}
             {action.type === "migrate" && (
