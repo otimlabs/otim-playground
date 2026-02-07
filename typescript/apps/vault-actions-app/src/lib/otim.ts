@@ -43,6 +43,8 @@ export async function deposit(params: {
   depositAmount: string;
   recipientAddress: `0x${string}`;
   decimals: number;
+  paymentChainId: number;
+  paymentToken: `0x${string}`;
 }) {
   const client = await getClient();
 
@@ -51,7 +53,9 @@ export async function deposit(params: {
   );
 
   const payload = prepareVaultDepositSettlement({
-    acceptedTokens: ACCEPTED_TOKENS,
+    acceptedTokens: {
+      [params.paymentChainId]: [params.paymentToken],
+    },
     vaultChainId: params.vaultChainId as SupportedChainId,
     vaultAddress: params.vaultAddress,
     vaultUnderlyingToken: params.vaultUnderlyingToken,

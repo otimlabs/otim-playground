@@ -12,6 +12,8 @@ export async function POST(request: Request) {
       depositAmount,
       recipientAddress,
       decimals,
+      paymentChainId,
+      paymentToken,
     } = body;
 
     if (
@@ -19,7 +21,9 @@ export async function POST(request: Request) {
       !vaultChainId ||
       !vaultUnderlyingToken ||
       !depositAmount ||
-      !recipientAddress
+      !recipientAddress ||
+      !paymentChainId ||
+      !paymentToken
     ) {
       return NextResponse.json(
         { error: "Missing required fields" },
@@ -34,6 +38,8 @@ export async function POST(request: Request) {
       depositAmount,
       recipientAddress,
       decimals: decimals ?? 6,
+      paymentChainId,
+      paymentToken,
     });
 
     return NextResponse.json(result);
