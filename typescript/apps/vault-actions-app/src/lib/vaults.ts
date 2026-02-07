@@ -1,3 +1,7 @@
+import { createPublicClient, http } from "viem";
+import { mainnet, base, arbitrum, optimism, polygon } from "viem/chains";
+import type { Chain } from "viem";
+
 export interface VaultConfig {
   address: `0x${string}`;
   name: string;
@@ -56,6 +60,27 @@ const NETWORK_DISPLAY_NAMES: Record<string, string> = {
   optimism: "Optimism",
   polygon: "Polygon",
 };
+
+const CHAINS: Record<string, Chain> = {
+  mainnet,
+  base,
+  arbitrum,
+  optimism,
+  polygon,
+};
+
+// Minimal ABIs for on-chain ERC-4626 / ERC-20 reads
+const erc4626Abi = [
+  { name: "name", type: "function", inputs: [], outputs: [{ name: "", type: "string" }], stateMutability: "view" },
+  { name: "symbol", type: "function", inputs: [], outputs: [{ name: "", type: "string" }], stateMutability: "view" },
+  { name: "asset", type: "function", inputs: [], outputs: [{ name: "", type: "address" }], stateMutability: "view" },
+  { name: "totalAssets", type: "function", inputs: [], outputs: [{ name: "", type: "uint256" }], stateMutability: "view" },
+] as const;
+
+const erc20Abi = [
+  { name: "symbol", type: "function", inputs: [], outputs: [{ name: "", type: "string" }], stateMutability: "view" },
+  { name: "decimals", type: "function", inputs: [], outputs: [{ name: "", type: "uint8" }], stateMutability: "view" },
+] as const;
 
 function transformVault(v: VaultsFyiVault): VaultConfig {
   const apy7d = v.apy?.["7day"]?.total ?? v.apy?.["1day"]?.total ?? 0;
@@ -126,7 +151,24 @@ export async function fetchVaults(): Promise<VaultConfig[]> {
   return items.map(transformVault);
 }
 
+/**
+ * Fetch a single vault. Tries vaults.fyi API first, then falls back to
+ * on-chain RPC reads to verify it's a valid ERC-4626 vault.
+ */
 export async function fetchVault(
+  network: string,
+  address: string
+): Promise<VaultConfig> {
+  // Try vaults.fyi API first
+  try {
+    return await fetchVaultFromApi(network, address);
+  } catch {
+    // Not on vaults.fyi — try reading the contract directly
+    return await fetchVaultFromRpc(network, address);
+  }
+}
+
+async function fetchVaultFromApi(
   network: string,
   address: string
 ): Promise<VaultConfig> {
@@ -156,4 +198,56 @@ export async function fetchVault(
   const json: any = await res.json();
   const vault: VaultsFyiVault = json.data ?? json;
   return transformVault(vault);
+}
+
+async function fetchVaultFromRpc(
+  network: string,
+  address: string
+): Promise<VaultConfig> {
+  const chain = CHAINS[network];
+  if (!chain) {
+    throw new Error(`Unsupported network: ${network}`);
+  }
+
+  const client = createPublicClient({ chain, transport: http() });
+  const vaultAddr = address as `0x${string}`;
+
+  // Read ERC-4626 vault fields — asset() is the defining 4626 method
+  let vaultName: string;
+  let vaultSymbol: string;
+  let assetAddress: `0x${string}`;
+  try {
+    [vaultName, vaultSymbol, assetAddress] = await Promise.all([
+      client.readContract({ address: vaultAddr, abi: erc4626Abi, functionName: "name" }),
+      client.readContract({ address: vaultAddr, abi: erc4626Abi, functionName: "symbol" }),
+      client.readContract({ address: vaultAddr, abi: erc4626Abi, functionName: "asset" }),
+    ]);
+  } catch {
+    throw new Error(
+      "Contract does not implement ERC-4626 (asset() call failed)"
+    );
+  }
+
+  // Read underlying token info
+  const [tokenSymbol, tokenDecimals] = await Promise.all([
+    client.readContract({ address: assetAddress, abi: erc20Abi, functionName: "symbol" }),
+    client.readContract({ address: assetAddress, abi: erc20Abi, functionName: "decimals" }),
+  ]);
+
+  return {
+    address: vaultAddr,
+    name: vaultName,
+    symbol: vaultSymbol,
+    protocol: "Unknown",
+    chainId: chain.id,
+    chainName: NETWORK_DISPLAY_NAMES[network] ?? network,
+    network,
+    underlyingToken: {
+      address: assetAddress,
+      symbol: tokenSymbol,
+      decimals: tokenDecimals,
+    },
+    apy: 0,
+    tvlUsd: 0,
+  };
 }
