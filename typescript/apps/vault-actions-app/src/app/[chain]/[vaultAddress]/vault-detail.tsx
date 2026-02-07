@@ -194,20 +194,22 @@ export default function VaultDetail({ vault, isErc4626 }: { vault: VaultConfig; 
           <p className="text-sm font-mono text-zinc-600 mb-4 break-all">
             {vault.address}
           </p>
-          <div className="grid grid-cols-3 gap-4">
-            <div className="p-3 rounded-lg bg-zinc-900/50 border border-zinc-800">
-              <div className="text-xs text-zinc-500 mb-1">Token</div>
-              <div className="text-sm font-medium">{vault.underlyingToken.symbol}</div>
+          {(vault.apy > 0 || vault.tvlUsd > 0) && (
+            <div className="flex gap-4">
+              {vault.apy > 0 && (
+                <div className="p-3 rounded-lg bg-zinc-900/50 border border-zinc-800">
+                  <div className="text-xs text-zinc-500 mb-1">APY (7d)</div>
+                  <div className="text-sm font-medium text-emerald-400">{formatApy(vault.apy)}</div>
+                </div>
+              )}
+              {vault.tvlUsd > 0 && (
+                <div className="p-3 rounded-lg bg-zinc-900/50 border border-zinc-800">
+                  <div className="text-xs text-zinc-500 mb-1">TVL</div>
+                  <div className="text-sm font-medium">{formatUsd(vault.tvlUsd)}</div>
+                </div>
+              )}
             </div>
-            <div className="p-3 rounded-lg bg-zinc-900/50 border border-zinc-800">
-              <div className="text-xs text-zinc-500 mb-1">APY (7d)</div>
-              <div className="text-sm font-medium text-emerald-400">{formatApy(vault.apy)}</div>
-            </div>
-            <div className="p-3 rounded-lg bg-zinc-900/50 border border-zinc-800">
-              <div className="text-xs text-zinc-500 mb-1">TVL</div>
-              <div className="text-sm font-medium">{formatUsd(vault.tvlUsd)}</div>
-            </div>
-          </div>
+          )}
         </div>
 
         {/* Wallet */}
