@@ -276,15 +276,16 @@ export default function Home() {
                       </span>
                     </div>
                     <div className="flex flex-wrap items-center gap-x-4 gap-y-1 text-sm text-zinc-400">
-                      <span>
-                        {vault.underlyingToken.symbol}
-                      </span>
-                      <span>
-                        APY: <span className="text-emerald-400">{formatApy(vault.apy)}</span>
-                      </span>
-                      <span>
-                        TVL: {formatUsd(vault.tvlUsd)}
-                      </span>
+                      {vault.apy > 0 && (
+                        <span>
+                          APY: <span className="text-emerald-400">{formatApy(vault.apy)}</span>
+                        </span>
+                      )}
+                      {vault.tvlUsd > 0 && (
+                        <span>
+                          TVL: {formatUsd(vault.tvlUsd)}
+                        </span>
+                      )}
                       <span className="font-mono text-xs text-zinc-600 hidden sm:inline">
                         {truncateAddress(vault.address)}
                       </span>
