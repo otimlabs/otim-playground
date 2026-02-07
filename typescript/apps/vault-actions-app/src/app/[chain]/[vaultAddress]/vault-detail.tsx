@@ -23,7 +23,7 @@ function formatApy(apy: number): string {
   return `${(apy * 100).toFixed(2)}%`;
 }
 
-export default function VaultDetail({ vault }: { vault: VaultConfig }) {
+export default function VaultDetail({ vault, isErc4626 }: { vault: VaultConfig; isErc4626: boolean }) {
   const [walletAddress, setWalletAddress] = useState("");
   const [walletInput, setWalletInput] = useState("");
   const [actionType, setActionType] = useState<ActionType>("deposit");
@@ -234,8 +234,15 @@ export default function VaultDetail({ vault }: { vault: VaultConfig }) {
           )}
         </div>
 
+        {/* ERC-4626 warning */}
+        {!isErc4626 && (
+          <div className="mb-6 p-4 rounded-lg bg-amber-500/10 border border-amber-500/20 text-amber-400 text-sm">
+            This vault does not implement the ERC-4626 standard and cannot be used for deposits, withdrawals, or migrations.
+          </div>
+        )}
+
         {/* Action tabs */}
-        <div className="flex gap-1 mb-4 p-1 rounded-lg bg-zinc-900/50 border border-zinc-800">
+        <div className={`flex gap-1 mb-4 p-1 rounded-lg bg-zinc-900/50 border border-zinc-800 ${!isErc4626 ? "opacity-40 pointer-events-none" : ""}`}>
           {(["deposit", "withdraw", "migrate"] as const).map((type) => (
             <button
               key={type}
@@ -255,7 +262,7 @@ export default function VaultDetail({ vault }: { vault: VaultConfig }) {
         </div>
 
         {/* Action form */}
-        <div className="p-4 rounded-lg border border-zinc-800 bg-zinc-900/50">
+        <div className={`p-4 rounded-lg border border-zinc-800 bg-zinc-900/50 ${!isErc4626 ? "opacity-40 pointer-events-none" : ""}`}>
           {/* Deposit: payment token selector */}
           {actionType === "deposit" && (
             <div className="mb-4">
