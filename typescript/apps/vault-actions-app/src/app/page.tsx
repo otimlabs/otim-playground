@@ -39,7 +39,6 @@ export default function Home() {
   const [walletAddress, setWalletAddress] = useState("");
   const [walletInput, setWalletInput] = useState("");
   const [action, setAction] = useState<ActionState>({ type: null, vault: null });
-  const [amount, setAmount] = useState("");
   const [paymentOptionId, setPaymentOptionId] = useState(PAYMENT_OPTIONS[0].id);
   const [destVault, setDestVault] = useState<VaultConfig | null>(null);
   const [loading, setLoading] = useState(false);
@@ -86,20 +85,18 @@ export default function Home() {
 
   const openAction = (type: ActionType, vault: VaultConfig) => {
     setAction({ type, vault });
-    setAmount("");
     setDestVault(null);
     setResult(null);
   };
 
   const closeAction = () => {
     setAction({ type: null, vault: null });
-    setAmount("");
     setDestVault(null);
     setResult(null);
   };
 
   const handleSubmit = async () => {
-    if (!action.vault || !walletAddress || !amount) return;
+    if (!action.vault || !walletAddress) return;
     setLoading(true);
     setResult(null);
 
@@ -114,9 +111,7 @@ export default function Home() {
           vaultAddress: action.vault.address,
           vaultChainId: action.vault.chainId,
           vaultUnderlyingToken: action.vault.underlyingToken.address,
-          depositAmount: amount,
           recipientAddress: walletAddress,
-          decimals: action.vault.underlyingToken.decimals,
           paymentChainId: paymentOpt.chainId,
           paymentToken: paymentOpt.tokenAddress,
         };
@@ -126,11 +121,9 @@ export default function Home() {
           vaultAddress: action.vault.address,
           vaultChainId: action.vault.chainId,
           vaultUnderlyingToken: action.vault.underlyingToken.address,
-          withdrawAmount: amount,
           recipientAddress: walletAddress,
           settlementToken: action.vault.underlyingToken.address,
           settlementChainId: action.vault.chainId,
-          decimals: action.vault.underlyingToken.decimals,
         };
       } else if (action.type === "migrate" && destVault) {
         endpoint = "/api/migrate";
@@ -141,9 +134,7 @@ export default function Home() {
           destVaultAddress: destVault.address,
           destVaultChainId: destVault.chainId,
           destVaultUnderlyingToken: destVault.underlyingToken.address,
-          withdrawAmount: amount,
           recipientAddress: walletAddress,
-          decimals: action.vault.underlyingToken.decimals,
         };
       }
 
@@ -412,24 +403,6 @@ export default function Home() {
               </div>
             )}
 
-            {/* Amount input */}
-            <div className="mb-4">
-              <label className="block text-sm font-medium text-zinc-300 mb-2">
-                Amount ({action.type === "deposit"
-                  ? (PAYMENT_OPTIONS.find((o) => o.id === paymentOptionId) ?? PAYMENT_OPTIONS[0]).tokenSymbol
-                  : action.vault.underlyingToken.symbol})
-              </label>
-              <input
-                type="number"
-                value={amount}
-                onChange={(e) => setAmount(e.target.value)}
-                placeholder="0.00"
-                min="0"
-                step="any"
-                className="w-full bg-zinc-800 border border-zinc-700 rounded-md px-3 py-2 text-sm font-mono text-zinc-100 placeholder-zinc-600 focus:outline-none focus:ring-1 focus:ring-zinc-600"
-              />
-            </div>
-
             {/* Recipient */}
             <div className="mb-6 p-3 rounded-lg bg-zinc-800/50 border border-zinc-700/50">
               <div className="text-xs text-zinc-500 mb-1">Recipient</div>
@@ -475,7 +448,6 @@ export default function Home() {
               onClick={handleSubmit}
               disabled={
                 loading ||
-                !amount ||
                 (action.type === "migrate" && !destVault)
               }
               className="w-full py-2.5 bg-zinc-100 text-zinc-900 text-sm font-medium rounded-md hover:bg-zinc-200 disabled:opacity-30 disabled:cursor-not-allowed transition-colors"

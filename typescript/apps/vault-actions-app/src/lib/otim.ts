@@ -6,8 +6,6 @@ import {
 } from "@otim/sdk-server";
 import type {
   PrepareVaultDepositSettlementParams,
-  PrepareVaultWithdrawSettlementParams,
-  PrepareVaultMigrateSettlementParams,
 } from "@otim/sdk-server";
 
 type SupportedChainId =
@@ -42,17 +40,11 @@ export async function deposit(params: {
   vaultAddress: `0x${string}`;
   vaultChainId: number;
   vaultUnderlyingToken: `0x${string}`;
-  depositAmount: string;
   recipientAddress: `0x${string}`;
-  decimals: number;
   paymentChainId: number;
   paymentToken: `0x${string}`;
 }) {
   const client = await getClient();
-
-  const amount = BigInt(
-    Math.round(parseFloat(params.depositAmount) * 10 ** params.decimals)
-  );
 
   // Build acceptedTokens: must include the payment chain AND the vault chain
   const acceptedTokens: Record<number, `0x${string}`[]> = {
@@ -74,10 +66,10 @@ export async function deposit(params: {
     vaultChainId: params.vaultChainId as SupportedChainId,
     vaultAddress: params.vaultAddress,
     vaultUnderlyingToken: params.vaultUnderlyingToken,
-    depositAmount: amount,
+    depositAmount: BigInt(1),
     recipientAddress: params.recipientAddress,
     vaultMinTotalShares: BigInt(1),
-    note: `Deposit ${params.depositAmount} into vault via OTIM Playground`,
+    note: "Deposit into vault via OTIM Playground",
     maxRuns: 1,
   });
 
@@ -88,17 +80,11 @@ export async function withdraw(params: {
   vaultAddress: `0x${string}`;
   vaultChainId: number;
   vaultUnderlyingToken: `0x${string}`;
-  withdrawAmount: string;
   recipientAddress: `0x${string}`;
   settlementToken: `0x${string}`;
   settlementChainId: number;
-  decimals: number;
 }) {
   const client = await getClient();
-
-  const amount = BigInt(
-    Math.round(parseFloat(params.withdrawAmount) * 10 ** params.decimals)
-  );
 
   const payload = prepareVaultWithdrawSettlement({
     vaultAddress: params.vaultAddress,
@@ -107,8 +93,8 @@ export async function withdraw(params: {
     settlementChainId: params.settlementChainId as SupportedChainId,
     settlementToken: params.settlementToken,
     recipientAddress: params.recipientAddress,
-    withdrawAmount: amount,
-    note: `Withdraw ${params.withdrawAmount} from vault via OTIM Playground`,
+    withdrawAmount: BigInt(1),
+    note: "Withdraw from vault via OTIM Playground",
     maxRuns: 1,
   });
 
@@ -122,27 +108,21 @@ export async function migrate(params: {
   destVaultAddress: `0x${string}`;
   destVaultChainId: number;
   destVaultUnderlyingToken: `0x${string}`;
-  withdrawAmount: string;
   recipientAddress: `0x${string}`;
-  decimals: number;
 }) {
   const client = await getClient();
-
-  const amount = BigInt(
-    Math.round(parseFloat(params.withdrawAmount) * 10 ** params.decimals)
-  );
 
   const payload = prepareVaultMigrateSettlement({
     sourceVaultAddress: params.sourceVaultAddress,
     sourceVaultUnderlyingToken: params.sourceVaultUnderlyingToken,
     sourceVaultChainId: params.sourceVaultChainId as SupportedChainId,
-    withdrawAmount: amount,
+    withdrawAmount: BigInt(1),
     destVaultAddress: params.destVaultAddress,
     destVaultUnderlyingToken: params.destVaultUnderlyingToken,
     destVaultChainId: params.destVaultChainId as SupportedChainId,
     destVaultMinTotalShares: BigInt(1),
     recipientAddress: params.recipientAddress,
-    note: `Migrate ${params.withdrawAmount} between vaults via OTIM Playground`,
+    note: "Migrate between vaults via OTIM Playground",
     maxRuns: 1,
   });
 
