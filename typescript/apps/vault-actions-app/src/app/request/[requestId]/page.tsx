@@ -3,6 +3,7 @@
 import { useState, useEffect, useCallback } from "react";
 import { useParams } from "next/navigation";
 import Link from "next/link";
+import { QRCodeSVG } from "qrcode.react";
 
 interface OrchestrationDetails {
   requestId: string;
@@ -165,7 +166,7 @@ export default function RequestPage() {
                 <Step
                   number={2}
                   label={details.status === "pending"
-                    ? "Send funds to the ephemeral wallet below"
+                    ? "Send funds to the orchestrator address below"
                     : "Funds received"
                   }
                   done={details.status !== "pending" && details.status !== "draft"}
@@ -192,12 +193,24 @@ export default function RequestPage() {
               </div>
             </div>
 
-            {/* Ephemeral Wallet */}
+            {/* Orchestrator Address */}
             {!isTerminal && (
               <div className="p-4 rounded-lg border border-zinc-200 bg-zinc-50">
                 <div className="text-xs text-zinc-400 mb-1">
-                  {details.status === "pending" ? "Send funds to this address" : "Ephemeral Wallet"}
+                  {details.status === "pending" ? "Send funds to this address" : "Orchestrator Address"}
                 </div>
+
+                {/* QR Code */}
+                <div className="flex justify-center my-4">
+                  <div className="p-3 bg-white rounded-lg border border-zinc-200">
+                    <QRCodeSVG
+                      value={details.ephemeralWalletAddress}
+                      size={160}
+                      level="M"
+                    />
+                  </div>
+                </div>
+
                 <div className="flex items-center gap-2 mt-1">
                   <code className="text-sm font-mono text-zinc-900 break-all">
                     {details.ephemeralWalletAddress}
@@ -221,7 +234,7 @@ export default function RequestPage() {
                 </div>
                 {details.status === "pending" && (
                   <p className="text-xs text-zinc-400 mt-2">
-                    Deposit the tokens you want to {actionContext?.actionType ?? "deposit"} into this ephemeral wallet. The orchestration will proceed automatically once funds are detected.
+                    Send the tokens you want to {actionContext?.actionType ?? "deposit"} to this orchestrator address. The orchestration will proceed automatically once funds are detected.
                   </p>
                 )}
               </div>

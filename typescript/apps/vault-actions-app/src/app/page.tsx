@@ -478,7 +478,7 @@ export default function Home() {
                         {result.requestId}
                       </div>
                       <div>
-                        <span className="text-zinc-400">Ephemeral Wallet: </span>
+                        <span className="text-zinc-400">Orchestrator: </span>
                         {result.ephemeralWalletAddress}
                       </div>
                     </div>

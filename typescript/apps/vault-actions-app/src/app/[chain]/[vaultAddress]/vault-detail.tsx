@@ -381,7 +381,7 @@ export default function VaultDetail({ vault, isErc4626 }: { vault: VaultConfig; 
                       {result.requestId}
                     </div>
                     <div>
-                      <span className="text-zinc-400">Ephemeral Wallet: </span>
+                      <span className="text-zinc-400">Orchestrator: </span>
                       {result.ephemeralWalletAddress}
                     </div>
                   </div>
