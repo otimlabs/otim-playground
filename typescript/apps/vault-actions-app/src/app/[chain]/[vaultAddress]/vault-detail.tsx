@@ -28,6 +28,7 @@ export default function VaultDetail({ vault, isErc4626 }: { vault: VaultConfig; 
   const [walletInput, setWalletInput] = useState("");
   const [actionType, setActionType] = useState<ActionType>("deposit");
   const [paymentOptionId, setPaymentOptionId] = useState(PAYMENT_OPTIONS[0].id);
+  const [settlementOptionId, setSettlementOptionId] = useState(PAYMENT_OPTIONS[0].id);
   const [loading, setLoading] = useState(false);
   const [result, setResult] = useState<ResultState | null>(null);
 
@@ -88,14 +89,15 @@ export default function VaultDetail({ vault, isErc4626 }: { vault: VaultConfig; 
           paymentToken: paymentOpt.tokenAddress,
         };
       } else if (actionType === "withdraw") {
+        const settlementOpt = PAYMENT_OPTIONS.find((o) => o.id === settlementOptionId) ?? PAYMENT_OPTIONS[0];
         endpoint = "/api/withdraw";
         body = {
           vaultAddress: vault.address,
           vaultChainId: vault.chainId,
           vaultUnderlyingToken: vault.underlyingToken.address,
           recipientAddress: walletAddress,
-          settlementToken: vault.underlyingToken.address,
-          settlementChainId: vault.chainId,
+          settlementToken: settlementOpt.tokenAddress,
+          settlementChainId: settlementOpt.chainId,
         };
       } else if (actionType === "migrate" && destVault) {
         endpoint = "/api/migrate";
@@ -294,6 +296,26 @@ export default function VaultDetail({ vault, isErc4626 }: { vault: VaultConfig; 
             </div>
           )}
 
+          {/* Withdraw: settlement token selector */}
+          {actionType === "withdraw" && (
+            <div className="mb-4">
+              <label className="block text-sm font-medium text-zinc-700 mb-2">
+                Receive As
+              </label>
+              <select
+                value={settlementOptionId}
+                onChange={(e) => setSettlementOptionId(e.target.value)}
+                className="w-full bg-white border border-zinc-300 rounded-md px-3 py-2 text-sm text-zinc-900 focus:outline-none focus:ring-1 focus:ring-zinc-400"
+              >
+                {PAYMENT_OPTIONS.map((opt) => (
+                  <option key={opt.id} value={opt.id}>
+                    {opt.label}
+                  </option>
+                ))}
+              </select>
+            </div>
+          )}
+
           {/* Migrate: destination vault */}
           {actionType === "migrate" && (
             <div className="mb-4">
@@ -365,7 +387,7 @@ export default function VaultDetail({ vault, isErc4626 }: { vault: VaultConfig; 
             disabled={!canSubmit}
             className="w-full py-2.5 bg-zinc-900 text-white text-sm font-medium rounded-md hover:bg-zinc-800 disabled:opacity-30 disabled:cursor-not-allowed transition-colors capitalize"
           >
-            {loading ? "Processing..." : `Submit ${actionType}`}
+            {loading ? "Processing..." : "Start"}
           </button>
 
           {!walletAddress && (
