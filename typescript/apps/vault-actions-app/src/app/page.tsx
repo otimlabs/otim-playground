@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import { useRouter } from "next/navigation";
 import Link from "next/link";
 import type { VaultConfig } from "@/lib/vaults";
 import { PAYMENT_OPTIONS } from "@/lib/constants";
@@ -44,6 +45,7 @@ export default function Home() {
   const [destVault, setDestVault] = useState<VaultConfig | null>(null);
   const [loading, setLoading] = useState(false);
   const [result, setResult] = useState<ResultState | null>(null);
+  const router = useRouter();
 
   useEffect(() => {
     const saved = localStorage.getItem("walletAddress");
@@ -151,10 +153,17 @@ export default function Home() {
       if (!res.ok) {
         setResult({ error: data.error || "Request failed" });
       } else {
-        setResult({
-          requestId: data.requestId,
-          ephemeralWalletAddress: data.ephemeralWalletAddress,
-        });
+        sessionStorage.setItem(
+          `request-${data.requestId}`,
+          JSON.stringify({
+            actionType: action.type,
+            vaultName: action.vault!.name,
+            vaultNetwork: action.vault!.chainName,
+            vaultAddress: action.vault!.address,
+          })
+        );
+        router.push(`/request/${data.requestId}`);
+        return;
       }
     } catch (err) {
       setResult({ error: err instanceof Error ? err.message : "Unknown error" });

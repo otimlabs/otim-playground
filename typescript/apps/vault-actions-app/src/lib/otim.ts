@@ -113,3 +113,8 @@ export async function migrate(params: {
 
   return client.orchestration.create(payload);
 }
+
+export async function getOrchestrationDetails(requestId: string) {
+  const client = await getClient();
+  return client.orchestration.getDetails({ requestId });
+}

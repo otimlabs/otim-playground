@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import { useRouter } from "next/navigation";
 import Link from "next/link";
 import type { VaultConfig } from "@/lib/vaults";
 import { PAYMENT_OPTIONS } from "@/lib/constants";
@@ -31,6 +32,7 @@ export default function VaultDetail({ vault, isErc4626 }: { vault: VaultConfig; 
   const [settlementOptionId, setSettlementOptionId] = useState(PAYMENT_OPTIONS[0].id);
   const [loading, setLoading] = useState(false);
   const [result, setResult] = useState<ResultState | null>(null);
+  const router = useRouter();
 
   // Migrate state
   const [migrateVaults, setMigrateVaults] = useState<VaultConfig[]>([]);
@@ -123,10 +125,17 @@ export default function VaultDetail({ vault, isErc4626 }: { vault: VaultConfig; 
       if (!res.ok) {
         setResult({ error: data.error || "Request failed" });
       } else {
-        setResult({
-          requestId: data.requestId,
-          ephemeralWalletAddress: data.ephemeralWalletAddress,
-        });
+        sessionStorage.setItem(
+          `request-${data.requestId}`,
+          JSON.stringify({
+            actionType: actionType,
+            vaultName: vault.name,
+            vaultNetwork: vault.chainName,
+            vaultAddress: vault.address,
+          })
+        );
+        router.push(`/request/${data.requestId}`);
+        return;
       }
     } catch (err) {
       setResult({ error: err instanceof Error ? err.message : "Unknown error" });
