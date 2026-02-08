@@ -2,8 +2,8 @@ import type { Metadata } from "next";
 import "./globals.css";
 
 export const metadata: Metadata = {
-  title: "OTIM Vault Actions",
-  description: "Deposit, withdraw, and migrate between yield vaults using OTIM",
+  title: "Otim Vault Actions",
+  description: "Deposit, withdraw, and migrate between yield vaults using Otim",
 };
 
 export default function RootLayout({
@@ -12,7 +12,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" className="dark">
+    <html lang="en">
       <body className="antialiased">
         {children}
       </body>

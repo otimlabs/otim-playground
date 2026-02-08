@@ -139,12 +139,12 @@ export default function VaultDetail({ vault, isErc4626 }: { vault: VaultConfig; 
     (actionType !== "migrate" || destVault);
 
   return (
-    <div className="min-h-screen bg-[#09090b] text-zinc-100 font-sans">
+    <div className="min-h-screen bg-white text-zinc-900 font-sans">
       <div className="max-w-2xl mx-auto px-4 py-8">
         {/* Back link */}
         <Link
           href="/"
-          className="inline-flex items-center gap-1 text-sm text-zinc-500 hover:text-zinc-300 transition-colors mb-6"
+          className="inline-flex items-center gap-1 text-sm text-zinc-400 hover:text-zinc-700 transition-colors mb-6"
         >
           <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
             <line x1="19" y1="12" x2="5" y2="12" />
@@ -156,10 +156,10 @@ export default function VaultDetail({ vault, isErc4626 }: { vault: VaultConfig; 
         {/* Vault hero */}
         <div className="mb-8">
           <div className="flex items-center gap-2 mb-2 flex-wrap">
-            <span className="text-xs px-2 py-0.5 rounded bg-zinc-800 text-zinc-400">
+            <span className="text-xs px-2 py-0.5 rounded bg-zinc-200 text-zinc-600">
               {vault.chainName}
             </span>
-            <span className="text-xs px-2 py-0.5 rounded bg-zinc-800/50 text-zinc-500">
+            <span className="text-xs px-2 py-0.5 rounded bg-zinc-100 text-zinc-500">
               {vault.protocol}
             </span>
           </div>
@@ -172,7 +172,7 @@ export default function VaultDetail({ vault, isErc4626 }: { vault: VaultConfig; 
                 href={vault.url}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="text-zinc-500 hover:text-zinc-300 transition-colors"
+                className="text-zinc-400 hover:text-zinc-700 transition-colors"
                 title="Vault info"
               >
                 <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
@@ -183,20 +183,20 @@ export default function VaultDetail({ vault, isErc4626 }: { vault: VaultConfig; 
               </a>
             )}
           </div>
-          <p className="text-sm font-mono text-zinc-600 mb-4 break-all">
+          <p className="text-sm font-mono text-zinc-400 mb-4 break-all">
             {vault.address}
           </p>
           {(vault.apy > 0 || vault.tvlUsd > 0) && (
             <div className="flex gap-4">
               {vault.apy > 0 && (
-                <div className="p-3 rounded-lg bg-zinc-900/50 border border-zinc-800">
-                  <div className="text-xs text-zinc-500 mb-1">APY (7d)</div>
-                  <div className="text-sm font-medium text-emerald-400">{formatApy(vault.apy)}</div>
+                <div className="p-3 rounded-lg bg-zinc-50 border border-zinc-200">
+                  <div className="text-xs text-zinc-400 mb-1">APY (7d)</div>
+                  <div className="text-sm font-medium text-emerald-600">{formatApy(vault.apy)}</div>
                 </div>
               )}
               {vault.tvlUsd > 0 && (
-                <div className="p-3 rounded-lg bg-zinc-900/50 border border-zinc-800">
-                  <div className="text-xs text-zinc-500 mb-1">TVL</div>
+                <div className="p-3 rounded-lg bg-zinc-50 border border-zinc-200">
+                  <div className="text-xs text-zinc-400 mb-1">TVL</div>
                   <div className="text-sm font-medium">{formatUsd(vault.tvlUsd)}</div>
                 </div>
               )}
@@ -205,13 +205,13 @@ export default function VaultDetail({ vault, isErc4626 }: { vault: VaultConfig; 
         </div>
 
         {/* Wallet */}
-        <div className="mb-6 p-4 rounded-lg border border-zinc-800 bg-zinc-900/50">
-          <label className="block text-sm font-medium text-zinc-300 mb-2">
+        <div className="mb-6 p-4 rounded-lg border border-zinc-200 bg-zinc-50">
+          <label className="block text-sm font-medium text-zinc-700 mb-2">
             Wallet Address
           </label>
           {walletAddress ? (
             <div className="flex items-center gap-3">
-              <code className="text-sm font-mono text-emerald-400 bg-emerald-400/10 px-3 py-1.5 rounded break-all">
+              <code className="text-sm font-mono text-emerald-600 bg-emerald-50 px-3 py-1.5 rounded break-all">
                 {walletAddress}
               </code>
               <button
@@ -220,7 +220,7 @@ export default function VaultDetail({ vault, isErc4626 }: { vault: VaultConfig; 
                   setWalletInput("");
                   localStorage.removeItem("walletAddress");
                 }}
-                className="text-xs text-zinc-500 hover:text-zinc-300 transition-colors shrink-0"
+                className="text-xs text-zinc-400 hover:text-zinc-700 transition-colors shrink-0"
               >
                 Change
               </button>
@@ -232,12 +232,12 @@ export default function VaultDetail({ vault, isErc4626 }: { vault: VaultConfig; 
                 value={walletInput}
                 onChange={(e) => setWalletInput(e.target.value)}
                 placeholder="0x..."
-                className="flex-1 bg-zinc-800 border border-zinc-700 rounded-md px-3 py-2 text-sm font-mono text-zinc-100 placeholder-zinc-600 focus:outline-none focus:ring-1 focus:ring-zinc-600"
+                className="flex-1 bg-white border border-zinc-300 rounded-md px-3 py-2 text-sm font-mono text-zinc-900 placeholder-zinc-400 focus:outline-none focus:ring-1 focus:ring-zinc-400"
               />
               <button
                 onClick={handleSaveWallet}
                 disabled={!walletInput.match(/^0x[a-fA-F0-9]{40}$/)}
-                className="px-4 py-2 bg-zinc-100 text-zinc-900 text-sm font-medium rounded-md hover:bg-zinc-200 disabled:opacity-30 disabled:cursor-not-allowed transition-colors"
+                className="px-4 py-2 bg-zinc-900 text-white text-sm font-medium rounded-md hover:bg-zinc-800 disabled:opacity-30 disabled:cursor-not-allowed transition-colors"
               >
                 Save
               </button>
@@ -247,13 +247,13 @@ export default function VaultDetail({ vault, isErc4626 }: { vault: VaultConfig; 
 
         {/* ERC-4626 warning */}
         {!isErc4626 && (
-          <div className="mb-6 p-4 rounded-lg bg-amber-500/10 border border-amber-500/20 text-amber-400 text-sm">
+          <div className="mb-6 p-4 rounded-lg bg-amber-50 border border-amber-200 text-amber-700 text-sm">
             This vault does not implement the ERC-4626 standard and cannot be used for deposits, withdrawals, or migrations.
           </div>
         )}
 
         {/* Action tabs */}
-        <div className={`flex gap-1 mb-4 p-1 rounded-lg bg-zinc-900/50 border border-zinc-800 ${!isErc4626 ? "opacity-40 pointer-events-none" : ""}`}>
+        <div className={`flex gap-1 mb-4 p-1 rounded-lg bg-zinc-50 border border-zinc-200 ${!isErc4626 ? "opacity-40 pointer-events-none" : ""}`}>
           {(["deposit", "withdraw", "migrate"] as const).map((type) => (
             <button
               key={type}
@@ -263,8 +263,8 @@ export default function VaultDetail({ vault, isErc4626 }: { vault: VaultConfig; 
               }}
               className={`flex-1 py-2 text-sm font-medium rounded-md capitalize transition-colors ${
                 actionType === type
-                  ? "bg-zinc-800 text-zinc-100"
-                  : "text-zinc-500 hover:text-zinc-300"
+                  ? "bg-white text-zinc-900 shadow-sm"
+                  : "text-zinc-500 hover:text-zinc-700"
               }`}
             >
               {type}
@@ -273,17 +273,17 @@ export default function VaultDetail({ vault, isErc4626 }: { vault: VaultConfig; 
         </div>
 
         {/* Action form */}
-        <div className={`p-4 rounded-lg border border-zinc-800 bg-zinc-900/50 ${!isErc4626 ? "opacity-40 pointer-events-none" : ""}`}>
+        <div className={`p-4 rounded-lg border border-zinc-200 bg-zinc-50 ${!isErc4626 ? "opacity-40 pointer-events-none" : ""}`}>
           {/* Deposit: payment token selector */}
           {actionType === "deposit" && (
             <div className="mb-4">
-              <label className="block text-sm font-medium text-zinc-300 mb-2">
+              <label className="block text-sm font-medium text-zinc-700 mb-2">
                 Pay With
               </label>
               <select
                 value={paymentOptionId}
                 onChange={(e) => setPaymentOptionId(e.target.value)}
-                className="w-full bg-zinc-800 border border-zinc-700 rounded-md px-3 py-2 text-sm text-zinc-100 focus:outline-none focus:ring-1 focus:ring-zinc-600"
+                className="w-full bg-white border border-zinc-300 rounded-md px-3 py-2 text-sm text-zinc-900 focus:outline-none focus:ring-1 focus:ring-zinc-400"
               >
                 {PAYMENT_OPTIONS.map((opt) => (
                   <option key={opt.id} value={opt.id}>
@@ -297,11 +297,11 @@ export default function VaultDetail({ vault, isErc4626 }: { vault: VaultConfig; 
           {/* Migrate: destination vault */}
           {actionType === "migrate" && (
             <div className="mb-4">
-              <label className="block text-sm font-medium text-zinc-300 mb-2">
+              <label className="block text-sm font-medium text-zinc-700 mb-2">
                 Destination Vault
               </label>
               {migrateLoading ? (
-                <div className="text-xs text-zinc-500">Loading vaults...</div>
+                <div className="text-xs text-zinc-400">Loading vaults...</div>
               ) : (
                 <select
                   value={destVault?.address ?? ""}
@@ -311,7 +311,7 @@ export default function VaultDetail({ vault, isErc4626 }: { vault: VaultConfig; 
                     );
                     setDestVault(v ?? null);
                   }}
-                  className="w-full bg-zinc-800 border border-zinc-700 rounded-md px-3 py-2 text-sm text-zinc-100 focus:outline-none focus:ring-1 focus:ring-zinc-600"
+                  className="w-full bg-white border border-zinc-300 rounded-md px-3 py-2 text-sm text-zinc-900 focus:outline-none focus:ring-1 focus:ring-zinc-400"
                 >
                   <option value="">Select a vault...</option>
                   {migrateVaults.map((v) => (
@@ -332,8 +332,8 @@ export default function VaultDetail({ vault, isErc4626 }: { vault: VaultConfig; 
             <div
               className={`mb-4 p-3 rounded-lg text-sm ${
                 result.error
-                  ? "bg-red-500/10 border border-red-500/20 text-red-400"
-                  : "bg-emerald-500/10 border border-emerald-500/20 text-emerald-400"
+                  ? "bg-red-50 border border-red-200 text-red-600"
+                  : "bg-emerald-50 border border-emerald-200 text-emerald-600"
               }`}
             >
               {result.error ? (
@@ -346,11 +346,11 @@ export default function VaultDetail({ vault, isErc4626 }: { vault: VaultConfig; 
                   <div className="font-medium mb-1">Orchestration Created</div>
                   <div className="text-xs font-mono space-y-1">
                     <div>
-                      <span className="text-zinc-500">Request ID: </span>
+                      <span className="text-zinc-400">Request ID: </span>
                       {result.requestId}
                     </div>
                     <div>
-                      <span className="text-zinc-500">Ephemeral Wallet: </span>
+                      <span className="text-zinc-400">Ephemeral Wallet: </span>
                       {result.ephemeralWalletAddress}
                     </div>
                   </div>
@@ -363,17 +363,30 @@ export default function VaultDetail({ vault, isErc4626 }: { vault: VaultConfig; 
           <button
             onClick={handleSubmit}
             disabled={!canSubmit}
-            className="w-full py-2.5 bg-zinc-100 text-zinc-900 text-sm font-medium rounded-md hover:bg-zinc-200 disabled:opacity-30 disabled:cursor-not-allowed transition-colors capitalize"
+            className="w-full py-2.5 bg-zinc-900 text-white text-sm font-medium rounded-md hover:bg-zinc-800 disabled:opacity-30 disabled:cursor-not-allowed transition-colors capitalize"
           >
             {loading ? "Processing..." : `Submit ${actionType}`}
           </button>
 
           {!walletAddress && (
-            <p className="text-center text-zinc-600 text-xs mt-3">
+            <p className="text-center text-zinc-400 text-xs mt-3">
               Set your wallet address above to submit
             </p>
           )}
         </div>
+      </div>
+
+      {/* Powered by Otim */}
+      <div className="text-center py-6 text-sm text-zinc-400">
+        Powered by{" "}
+        <a
+          href="https://otim.com"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="text-zinc-600 hover:text-zinc-900 transition-colors"
+        >
+          Otim
+        </a>
       </div>
     </div>
   );

@@ -54,7 +54,7 @@ export async function deposit(params: {
     depositAmount: BigInt(1),
     recipientAddress: params.recipientAddress,
     vaultMinTotalShares: BigInt(1),
-    note: "Deposit into vault via OTIM Playground",
+    note: "Deposit into vault via Otim Playground",
     maxRuns: 1,
   });
 
@@ -79,7 +79,7 @@ export async function withdraw(params: {
     settlementToken: params.settlementToken,
     recipientAddress: params.recipientAddress,
     withdrawAmount: BigInt(1),
-    note: "Withdraw from vault via OTIM Playground",
+    note: "Withdraw from vault via Otim Playground",
     maxRuns: 1,
   });
 
@@ -107,7 +107,7 @@ export async function migrate(params: {
     destVaultChainId: params.destVaultChainId as SupportedChainId,
     destVaultMinTotalShares: BigInt(1),
     recipientAddress: params.recipientAddress,
-    note: "Migrate between vaults via OTIM Playground",
+    note: "Migrate between vaults via Otim Playground",
     maxRuns: 1,
   });
 

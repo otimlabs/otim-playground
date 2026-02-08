@@ -14,12 +14,12 @@ export async function generateMetadata({ params }: PageProps) {
   try {
     const vault = await fetchVault(chain, vaultAddress);
     return {
-      title: `${vault.name} | OTIM Vault Actions`,
-      description: `${vault.name} on ${vault.chainName}. APY: ${(vault.apy * 100).toFixed(2)}%. TVL: $${Math.round(vault.tvlUsd).toLocaleString()}. Deposit, withdraw, or migrate via OTIM.`,
+      title: `${vault.name} | Otim Vault Actions`,
+      description: `${vault.name} on ${vault.chainName}. APY: ${(vault.apy * 100).toFixed(2)}%. TVL: $${Math.round(vault.tvlUsd).toLocaleString()}. Deposit, withdraw, or migrate via Otim.`,
     };
   } catch {
     return {
-      title: "Vault Not Found | OTIM Vault Actions",
+      title: "Vault Not Found | Otim Vault Actions",
     };
   }
 }
