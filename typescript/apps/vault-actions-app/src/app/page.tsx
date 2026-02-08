@@ -40,6 +40,7 @@ export default function Home() {
   const [walletInput, setWalletInput] = useState("");
   const [action, setAction] = useState<ActionState>({ type: null, vault: null });
   const [paymentOptionId, setPaymentOptionId] = useState(PAYMENT_OPTIONS[0].id);
+  const [settlementOptionId, setSettlementOptionId] = useState(PAYMENT_OPTIONS[0].id);
   const [destVault, setDestVault] = useState<VaultConfig | null>(null);
   const [loading, setLoading] = useState(false);
   const [result, setResult] = useState<ResultState | null>(null);
@@ -116,14 +117,15 @@ export default function Home() {
           paymentToken: paymentOpt.tokenAddress,
         };
       } else if (action.type === "withdraw") {
+        const settlementOpt = PAYMENT_OPTIONS.find((o) => o.id === settlementOptionId) ?? PAYMENT_OPTIONS[0];
         endpoint = "/api/withdraw";
         body = {
           vaultAddress: action.vault.address,
           vaultChainId: action.vault.chainId,
           vaultUnderlyingToken: action.vault.underlyingToken.address,
           recipientAddress: walletAddress,
-          settlementToken: action.vault.underlyingToken.address,
-          settlementChainId: action.vault.chainId,
+          settlementToken: settlementOpt.tokenAddress,
+          settlementChainId: settlementOpt.chainId,
         };
       } else if (action.type === "migrate" && destVault) {
         endpoint = "/api/migrate";
@@ -389,6 +391,26 @@ export default function Home() {
               </div>
             )}
 
+            {/* Withdraw: settlement token selector */}
+            {action.type === "withdraw" && (
+              <div className="mb-4">
+                <label className="block text-sm font-medium text-zinc-700 mb-2">
+                  Receive As
+                </label>
+                <select
+                  value={settlementOptionId}
+                  onChange={(e) => setSettlementOptionId(e.target.value)}
+                  className="w-full bg-white border border-zinc-300 rounded-md px-3 py-2 text-sm text-zinc-900 focus:outline-none focus:ring-1 focus:ring-zinc-400"
+                >
+                  {PAYMENT_OPTIONS.map((opt) => (
+                    <option key={opt.id} value={opt.id}>
+                      {opt.label}
+                    </option>
+                  ))}
+                </select>
+              </div>
+            )}
+
             {/* Migrate: destination vault selector */}
             {action.type === "migrate" && (
               <div className="mb-4">
@@ -465,7 +487,7 @@ export default function Home() {
               }
               className="w-full py-2.5 bg-zinc-900 text-white text-sm font-medium rounded-md hover:bg-zinc-800 disabled:opacity-30 disabled:cursor-not-allowed transition-colors"
             >
-              {loading ? "Processing..." : `Submit ${action.type}`}
+              {loading ? "Processing..." : "Start"}
             </button>
           </div>
         </div>
