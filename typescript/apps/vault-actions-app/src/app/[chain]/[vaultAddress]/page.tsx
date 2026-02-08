@@ -1,4 +1,4 @@
-import { fetchVault, isErc4626Compliant } from "@/lib/vaults";
+import { fetchVault, isCurated, isErc4626Compliant } from "@/lib/vaults";
 import { notFound } from "next/navigation";
 import VaultDetail from "./vault-detail";
 
@@ -34,7 +34,8 @@ export default async function VaultPage({ params }: PageProps) {
     notFound();
   }
 
-  const isErc4626 = await isErc4626Compliant(vault.chainId, vault.address);
+  // Curated vaults are trusted as 4626; only run the on-chain check for unknown vaults
+  const isErc4626 = isCurated(vaultAddress) || await isErc4626Compliant(vault.chainId, vault.address);
 
   return <VaultDetail vault={vault} isErc4626={isErc4626} />;
 }

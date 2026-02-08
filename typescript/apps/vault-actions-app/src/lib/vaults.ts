@@ -118,6 +118,11 @@ const CURATED_BY_ADDRESS = new Map<string, CuratedVault>(
   CURATED_VAULTS.map((v) => [v.address.toLowerCase(), v])
 );
 
+/** Check if a vault address is in the curated list (trusted as 4626) */
+export function isCurated(address: string): boolean {
+  return CURATED_BY_ADDRESS.has(address.toLowerCase());
+}
+
 /**
  * Verify a contract implements core ERC-4626 methods on-chain.
  * Calls asset() and convertToAssets(1) — if either reverts, it's not 4626.
