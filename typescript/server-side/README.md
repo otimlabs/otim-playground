@@ -40,6 +40,14 @@ Create a settlement orchestration that settles to USDC.e on Polygon, accepting t
 - `pnpm dev:create` - Create a new settlement orchestration
 - `pnpm dev:getDetails <request_id>` - Get details for a specific orchestration
 
+### settle-usdc-into-msy-vault
+
+Settle USDC on Ethereum mainnet and deposit into the MSY vault (underlying token: msUSD) on Ethereum mainnet. The auto-build route handles the USDC-to-msUSD conversion before depositing into the vault.
+
+**Commands:**
+- `pnpm dev:create` - Create a new vault deposit settlement orchestration
+- `pnpm dev:getDetails <request_id>` - Get details for a specific orchestration
+
 ### settle-usdc-into-vault
 
 Create a vault deposit settlement orchestration that collects USDC on Base and deposits it into an ERC-4626 vault.
