@@ -101,26 +101,15 @@ interface CuratedVault {
  * fetchVaults() resolves each via vaults.fyi API (or RPC fallback).
  */
 const CURATED_VAULTS: CuratedVault[] = [
-  // Gauntlet USDC Frontier
+  // Ethereum — Morpho
   { network: "mainnet", address: "0xc582F04d8a82795aa2Ff9c8bb4c1c889fe7b754e", url: "https://app.morpho.org/ethereum/vault/0xc582F04d8a82795aa2Ff9c8bb4c1c889fe7b754e/gauntlet-usdc-frontier" },
-  // Smokehouse USDC
   { network: "mainnet", address: "0xBEeFFF209270748ddd194831b3fa287a5386f5bC", url: "https://app.morpho.org/ethereum/vault/0xBEeFFF209270748ddd194831b3fa287a5386f5bC/smokehouse-usdc" },
-  // August USDC V2
   { network: "mainnet", address: "0x7ceB0f01Cb7187a2EBED5661eCC4d5701d8F2350", url: "https://app.morpho.org/ethereum/vault/0x7ceB0f01Cb7187a2EBED5661eCC4d5701d8F2350/august-usdc-v2" },
-  // Clearstar USDC Reactor
-  { network: "mainnet", address: "0x62fE596d59fB077c2Df736dF212E0AFfb522dC78", url: "https://app.morpho.org/ethereum/vault/0x62fE596d59fB077c2Df736dF212E0AFfb522dC78/clearstar-usdc-reactor" },
-  // Alpha USDC Core
   { network: "mainnet", address: "0xb0f05E4De970A1aaf77f8C2F823953a367504BA9", url: "https://app.morpho.org/ethereum/vault/0xb0f05E4De970A1aaf77f8C2F823953a367504BA9/alpha-usdc-core" },
-  // Clearstar USDC Core
-  { network: "mainnet", address: "0x69A238Ae7ebeb3c53ff3B544E48B96a2142fc284", url: "https://app.morpho.org/ethereum/vault/0x69A238Ae7ebeb3c53ff3B544E48B96a2142fc284/clearstar-usdc-core" },
-  // Gauntlet USDT Frontier
-  { network: "mainnet", address: "0xE571B648569619566CF6ce1060C97B621CB635D3", url: "https://app.morpho.org/ethereum/vault/0xE571B648569619566CF6ce1060C97B621CB635D3/gauntlet-usdt-frontier" },
-  // Gauntlet USDC RWA
-  { network: "mainnet", address: "0xA8875aaeBc4f830524e35d57F9772FfAcbdD6C45", url: "https://app.morpho.org/ethereum/vault/0xA8875aaeBc4f830524e35d57F9772FfAcbdD6C45/gauntlet-usdc-rwa" },
-  // 3F x Steakhouse USDC
   { network: "mainnet", address: "0xBEEf3f3A04e28895f3D5163d910474901981183D", url: "https://app.morpho.org/ethereum/vault/0xBEEf3f3A04e28895f3D5163d910474901981183D" },
-  // Main Street Yield
-  { network: "mainnet", address: "0x890A5122Aa1dA30fEC4286DE7904Ff808F0bd74A", url: "https://mainstreet.finance/", nameOverride: "Main Street Yield" },
+  // Base — Morpho
+  { network: "base", address: "0xBEEFE94c8aD530842bfE7d8B397938fFc1cb83b2", url: "https://app.morpho.org/base/vault/0xBEEFE94c8aD530842bfE7d8B397938fFc1cb83b2/steakhouse-prime-usdc" },
+  { network: "base", address: "0xc1256Ae5FF1cf2719D4937adb3bbCCab2E00A2Ca", url: "https://app.morpho.org/base/vault/0xc1256Ae5FF1cf2719D4937adb3bbCCab2E00A2Ca/moonwell-flagship-usdc" },
 ];
 
 /** Lookup curated metadata by lowercase address */
