@@ -20,8 +20,6 @@ async function getClient() {
     environment: "production",
   });
   await client.init();
-
-  console.log("client initialized");
   return client;
 }
 
@@ -62,10 +60,7 @@ export async function deposit(params: {
   });
 
 
-  return client.orchestration.create(payload).catch((error) => {
-    console.error(error);
-    throw error;
-  });
+  return client.orchestration.create(payload);
 }
 
 export async function withdraw(params: {
