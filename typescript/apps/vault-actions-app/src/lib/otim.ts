@@ -20,6 +20,8 @@ async function getClient() {
     environment: "production",
   });
   await client.init();
+
+  console.log("client initialized");
   return client;
 }
 
@@ -32,6 +34,7 @@ export async function deposit(params: {
   paymentToken: `0x${string}`;
 }) {
   const client = await getClient();
+
 
   // acceptedTokens: the user's payment token + the vault's underlying token on its chain
   const acceptedTokens: Record<number, `0x${string}`[]> = {};
@@ -58,7 +61,11 @@ export async function deposit(params: {
     maxRuns: 1,
   });
 
-  return client.orchestration.create(payload);
+
+  return client.orchestration.create(payload).catch((error) => {
+    console.error(error);
+    throw error;
+  });
 }
 
 export async function withdraw(params: {
@@ -73,7 +80,6 @@ export async function withdraw(params: {
 
   const payload = prepareVaultWithdrawSettlement({
     vaultAddress: params.vaultAddress,
-    vaultUnderlyingToken: params.vaultUnderlyingToken,
     vaultChainId: params.vaultChainId as SupportedChainId,
     settlementChainId: params.settlementChainId as SupportedChainId,
     settlementToken: params.settlementToken,
