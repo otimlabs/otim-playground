@@ -6,7 +6,7 @@ import Link from "next/link";
 import type { VaultConfig } from "@/lib/vaults";
 import { PAYMENT_OPTIONS } from "@/lib/constants";
 
-type ActionType = "deposit" | "withdraw" | "migrate" | null;
+type ActionType = "deposit" | "withdraw" | null;
 
 interface ActionState {
   type: ActionType;
@@ -42,7 +42,6 @@ export default function Home() {
   const [action, setAction] = useState<ActionState>({ type: null, vault: null });
   const [paymentOptionId, setPaymentOptionId] = useState(PAYMENT_OPTIONS[0].id);
   const [settlementOptionId, setSettlementOptionId] = useState(PAYMENT_OPTIONS[0].id);
-  const [destVault, setDestVault] = useState<VaultConfig | null>(null);
   const [loading, setLoading] = useState(false);
   const [result, setResult] = useState<ResultState | null>(null);
   const router = useRouter();
@@ -88,13 +87,11 @@ export default function Home() {
 
   const openAction = (type: ActionType, vault: VaultConfig) => {
     setAction({ type, vault });
-    setDestVault(null);
     setResult(null);
   };
 
   const closeAction = () => {
     setAction({ type: null, vault: null });
-    setDestVault(null);
     setResult(null);
   };
 
@@ -129,17 +126,6 @@ export default function Home() {
           settlementToken: settlementOpt.tokenAddress,
           settlementChainId: settlementOpt.chainId,
         };
-      } else if (action.type === "migrate" && destVault) {
-        endpoint = "/api/migrate";
-        body = {
-          sourceVaultAddress: action.vault.address,
-          sourceVaultChainId: action.vault.chainId,
-          sourceVaultUnderlyingToken: action.vault.underlyingToken.address,
-          destVaultAddress: destVault.address,
-          destVaultChainId: destVault.chainId,
-          destVaultUnderlyingToken: destVault.underlyingToken.address,
-          recipientAddress: walletAddress,
-        };
       }
 
       const res = await fetch(endpoint, {
@@ -172,10 +158,6 @@ export default function Home() {
     }
   };
 
-  const migrateTargets = action.vault
-    ? vaults.filter((v) => v.address !== action.vault!.address)
-    : [];
-
   return (
     <div className="min-h-screen bg-white text-zinc-900 font-sans">
       <div className="max-w-4xl mx-auto px-4 py-8 overflow-hidden">
@@ -185,7 +167,7 @@ export default function Home() {
             Otim Vault Actions
           </h1>
           <p className="text-zinc-500 mt-1 text-sm">
-            Deposit, withdraw, and migrate between yield vaults
+            Deposit and withdraw from yield vaults
           </p>
         </div>
 
@@ -308,13 +290,6 @@ export default function Home() {
                     >
                       Withdraw
                     </button>
-                    <button
-                      onClick={() => openAction("migrate", vault)}
-                      disabled={!walletAddress}
-                      className="px-3 py-1.5 text-xs font-medium rounded-md bg-blue-50 text-blue-600 border border-blue-200 hover:bg-blue-100 disabled:opacity-30 disabled:cursor-not-allowed transition-colors"
-                    >
-                      Migrate
-                    </button>
                   </div>
                 </div>
               </div>
@@ -371,9 +346,7 @@ export default function Home() {
 
             {/* Source vault info */}
             <div className="mb-4 p-3 rounded-lg bg-zinc-50 border border-zinc-200">
-              <div className="text-xs text-zinc-400 mb-1">
-                {action.type === "migrate" ? "Source Vault" : "Vault"}
-              </div>
+              <div className="text-xs text-zinc-400 mb-1">Vault</div>
               <div className="font-medium text-sm">{action.vault.name}</div>
               <div className="text-xs text-zinc-500 mt-0.5">
                 {action.vault.chainName} &middot; {action.vault.protocol} &middot; {action.vault.underlyingToken.symbol} &middot; {formatApy(action.vault.apy)} APY
@@ -414,33 +387,6 @@ export default function Home() {
                   {PAYMENT_OPTIONS.map((opt) => (
                     <option key={opt.id} value={opt.id}>
                       {opt.label}
-                    </option>
-                  ))}
-                </select>
-              </div>
-            )}
-
-            {/* Migrate: destination vault selector */}
-            {action.type === "migrate" && (
-              <div className="mb-4">
-                <label className="block text-sm font-medium text-zinc-700 mb-2">
-                  Destination Vault
-                </label>
-                <select
-                  value={destVault?.address ?? ""}
-                  onChange={(e) => {
-                    const v = vaults.find((v) => v.address === e.target.value);
-                    setDestVault(v ?? null);
-                  }}
-                  className="w-full bg-white border border-zinc-300 rounded-md px-3 py-2 text-sm text-zinc-900 focus:outline-none focus:ring-1 focus:ring-zinc-400"
-                >
-                  <option value="">Select a vault...</option>
-                  {migrateTargets.map((v) => (
-                    <option
-                      key={`${v.chainId}-${v.address}`}
-                      value={v.address}
-                    >
-                      {v.name} ({v.chainName}) - {formatApy(v.apy)} APY
                     </option>
                   ))}
                 </select>
@@ -490,10 +436,7 @@ export default function Home() {
             {/* Submit */}
             <button
               onClick={handleSubmit}
-              disabled={
-                loading ||
-                (action.type === "migrate" && !destVault)
-              }
+              disabled={loading}
               className="w-full py-2.5 bg-zinc-900 text-white text-sm font-medium rounded-md hover:bg-zinc-800 disabled:opacity-30 disabled:cursor-not-allowed transition-colors"
             >
               {loading ? "Processing..." : "Start"}

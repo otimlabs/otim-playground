@@ -6,7 +6,7 @@ import Link from "next/link";
 import type { VaultConfig } from "@/lib/vaults";
 import { PAYMENT_OPTIONS } from "@/lib/constants";
 
-type ActionType = "deposit" | "withdraw" | "migrate";
+type ActionType = "deposit" | "withdraw";
 
 interface ResultState {
   requestId?: string;
@@ -34,11 +34,6 @@ export default function VaultDetail({ vault, isErc4626 }: { vault: VaultConfig; 
   const [result, setResult] = useState<ResultState | null>(null);
   const router = useRouter();
 
-  // Migrate state
-  const [migrateVaults, setMigrateVaults] = useState<VaultConfig[]>([]);
-  const [destVault, setDestVault] = useState<VaultConfig | null>(null);
-  const [migrateLoading, setMigrateLoading] = useState(false);
-
   useEffect(() => {
     const saved = localStorage.getItem("walletAddress");
     if (saved) {
@@ -46,22 +41,6 @@ export default function VaultDetail({ vault, isErc4626 }: { vault: VaultConfig; 
       setWalletInput(saved);
     }
   }, []);
-
-  useEffect(() => {
-    if (actionType === "migrate" && migrateVaults.length === 0) {
-      setMigrateLoading(true);
-      fetch("/api/vaults")
-        .then((res) => res.json())
-        .then((data) => {
-          const vaults: VaultConfig[] = Array.isArray(data) ? data : [];
-          setMigrateVaults(
-            vaults.filter((v) => v.address !== vault.address)
-          );
-        })
-        .catch(() => {})
-        .finally(() => setMigrateLoading(false));
-    }
-  }, [actionType, migrateVaults.length, vault.address]);
 
   const handleSaveWallet = () => {
     if (walletInput.match(/^0x[a-fA-F0-9]{40}$/)) {
@@ -101,17 +80,6 @@ export default function VaultDetail({ vault, isErc4626 }: { vault: VaultConfig; 
           settlementToken: settlementOpt.tokenAddress,
           settlementChainId: settlementOpt.chainId,
         };
-      } else if (actionType === "migrate" && destVault) {
-        endpoint = "/api/migrate";
-        body = {
-          sourceVaultAddress: vault.address,
-          sourceVaultChainId: vault.chainId,
-          sourceVaultUnderlyingToken: vault.underlyingToken.address,
-          destVaultAddress: destVault.address,
-          destVaultChainId: destVault.chainId,
-          destVaultUnderlyingToken: destVault.underlyingToken.address,
-          recipientAddress: walletAddress,
-        };
       }
 
       const res = await fetch(endpoint, {
@@ -144,10 +112,7 @@ export default function VaultDetail({ vault, isErc4626 }: { vault: VaultConfig; 
     }
   };
 
-  const canSubmit =
-    walletAddress &&
-    !loading &&
-    (actionType !== "migrate" || destVault);
+  const canSubmit = walletAddress && !loading;
 
   return (
     <div className="min-h-screen bg-white text-zinc-900 font-sans">
@@ -259,13 +224,13 @@ export default function VaultDetail({ vault, isErc4626 }: { vault: VaultConfig; 
         {/* ERC-4626 warning */}
         {!isErc4626 && (
           <div className="mb-6 p-4 rounded-lg bg-amber-50 border border-amber-200 text-amber-700 text-sm">
-            This vault does not implement the ERC-4626 standard and cannot be used for deposits, withdrawals, or migrations.
+            This vault does not implement the ERC-4626 standard and cannot be used for deposits or withdrawals.
           </div>
         )}
 
         {/* Action tabs */}
         <div className={`flex gap-1 mb-4 p-1 rounded-lg bg-zinc-50 border border-zinc-200 ${!isErc4626 ? "opacity-40 pointer-events-none" : ""}`}>
-          {(["deposit", "withdraw", "migrate"] as const).map((type) => (
+          {(["deposit", "withdraw"] as const).map((type) => (
             <button
               key={type}
               onClick={() => {
@@ -322,39 +287,6 @@ export default function VaultDetail({ vault, isErc4626 }: { vault: VaultConfig; 
                   </option>
                 ))}
               </select>
-            </div>
-          )}
-
-          {/* Migrate: destination vault */}
-          {actionType === "migrate" && (
-            <div className="mb-4">
-              <label className="block text-sm font-medium text-zinc-700 mb-2">
-                Destination Vault
-              </label>
-              {migrateLoading ? (
-                <div className="text-xs text-zinc-400">Loading vaults...</div>
-              ) : (
-                <select
-                  value={destVault?.address ?? ""}
-                  onChange={(e) => {
-                    const v = migrateVaults.find(
-                      (v) => v.address === e.target.value
-                    );
-                    setDestVault(v ?? null);
-                  }}
-                  className="w-full bg-white border border-zinc-300 rounded-md px-3 py-2 text-sm text-zinc-900 focus:outline-none focus:ring-1 focus:ring-zinc-400"
-                >
-                  <option value="">Select a vault...</option>
-                  {migrateVaults.map((v) => (
-                    <option
-                      key={`${v.chainId}-${v.address}`}
-                      value={v.address}
-                    >
-                      {v.name} ({v.chainName}) - {formatApy(v.apy)} APY
-                    </option>
-                  ))}
-                </select>
-              )}
             </div>
           )}
 

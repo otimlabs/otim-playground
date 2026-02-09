@@ -3,7 +3,7 @@ import "./globals.css";
 
 export const metadata: Metadata = {
   title: "Otim Vault Actions",
-  description: "Deposit, withdraw, and migrate between yield vaults using Otim",
+  description: "Deposit and withdraw from yield vaults using Otim",
 };
 
 export default function RootLayout({
