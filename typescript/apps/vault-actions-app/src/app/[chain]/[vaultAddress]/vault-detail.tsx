@@ -100,6 +100,7 @@ export default function VaultDetail({ vault, isErc4626 }: { vault: VaultConfig; 
             vaultName: vault.name,
             vaultNetwork: vault.chainName,
             vaultAddress: vault.address,
+            vaultChainId: vault.chainId,
           })
         );
         router.push(`/request/${data.requestId}`);

@@ -40,6 +40,16 @@ function StatusBadge({ status }: { status: OrchestrationDetails["status"] }) {
   );
 }
 
+function getExplorerUrl(chainId: number | undefined, address: string): string {
+  if (chainId === 8453) return `https://basescan.org/address/${address}`;
+  return `https://etherscan.io/address/${address}`;
+}
+
+function getExplorerName(chainId: number | undefined): string {
+  if (chainId === 8453) return "Basescan";
+  return "Etherscan";
+}
+
 export default function RequestPage() {
   const params = useParams();
   const requestId = params.requestId as string;
@@ -55,6 +65,7 @@ export default function RequestPage() {
     vaultName: string;
     vaultNetwork: string;
     vaultAddress: string;
+    vaultChainId?: number;
   } | null>(null);
 
   useEffect(() => {
@@ -194,13 +205,13 @@ export default function RequestPage() {
             </div>
 
             {/* Orchestrator Address */}
-            {!isTerminal && (
-              <div className="p-4 rounded-lg border border-zinc-200 bg-zinc-50">
-                <div className="text-xs text-zinc-400 mb-1">
-                  {details.status === "pending" ? "Send funds to this address" : "Orchestrator Address"}
-                </div>
+            <div className="p-4 rounded-lg border border-zinc-200 bg-zinc-50">
+              <div className="text-xs text-zinc-400 mb-1">
+                {details.status === "pending" ? "Send funds to this address" : "Orchestrator Address"}
+              </div>
 
-                {/* QR Code */}
+              {/* QR Code — only while pending */}
+              {details.status === "pending" && (
                 <div className="flex justify-center my-4">
                   <div className="p-3 bg-white rounded-lg border border-zinc-200">
                     <QRCodeSVG
@@ -210,35 +221,53 @@ export default function RequestPage() {
                     />
                   </div>
                 </div>
+              )}
 
-                <div className="flex items-center gap-2 mt-1">
-                  <code className="text-sm font-mono text-zinc-900 break-all">
-                    {details.ephemeralWalletAddress}
-                  </code>
-                  <button
-                    onClick={() => handleCopy(details.ephemeralWalletAddress)}
-                    className="shrink-0 p-1.5 rounded-md hover:bg-zinc-200 transition-colors"
-                    title="Copy address"
-                  >
-                    {copied ? (
-                      <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="text-emerald-600">
-                        <polyline points="20 6 9 17 4 12" />
-                      </svg>
-                    ) : (
-                      <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="text-zinc-400">
-                        <rect x="9" y="9" width="13" height="13" rx="2" ry="2" />
-                        <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1" />
-                      </svg>
-                    )}
-                  </button>
-                </div>
-                {details.status === "pending" && (
-                  <p className="text-xs text-zinc-400 mt-2">
-                    Send the tokens you want to {actionContext?.actionType ?? "deposit"} to this orchestrator address. The orchestration will proceed automatically once funds are detected.
-                  </p>
-                )}
+              <div className="flex items-center gap-2 mt-1">
+                <a
+                  href={getExplorerUrl(actionContext?.vaultChainId, details.ephemeralWalletAddress)}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-sm font-mono text-zinc-900 hover:text-blue-600 transition-colors break-all"
+                >
+                  {details.ephemeralWalletAddress}
+                </a>
+                <a
+                  href={getExplorerUrl(actionContext?.vaultChainId, details.ephemeralWalletAddress)}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="shrink-0 p-1.5 rounded-md hover:bg-zinc-200 transition-colors"
+                  title={`View on ${getExplorerName(actionContext?.vaultChainId)}`}
+                >
+                  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-zinc-400">
+                    <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6" />
+                    <polyline points="15 3 21 3 21 9" />
+                    <line x1="10" y1="14" x2="21" y2="3" />
+                  </svg>
+                </a>
+                <button
+                  onClick={() => handleCopy(details.ephemeralWalletAddress)}
+                  className="shrink-0 p-1.5 rounded-md hover:bg-zinc-200 transition-colors"
+                  title="Copy address"
+                >
+                  {copied ? (
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="text-emerald-600">
+                      <polyline points="20 6 9 17 4 12" />
+                    </svg>
+                  ) : (
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="text-zinc-400">
+                      <rect x="9" y="9" width="13" height="13" rx="2" ry="2" />
+                      <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1" />
+                    </svg>
+                  )}
+                </button>
               </div>
-            )}
+              {details.status === "pending" && (
+                <p className="text-xs text-zinc-400 mt-2">
+                  Send the tokens you want to {actionContext?.actionType ?? "deposit"} to this orchestrator address. The orchestration will proceed automatically once funds are detected.
+                </p>
+              )}
+            </div>
 
             {/* Request ID */}
             <div className="p-4 rounded-lg border border-zinc-200 bg-zinc-50">

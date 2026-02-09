@@ -146,6 +146,7 @@ export default function Home() {
             vaultName: action.vault!.name,
             vaultNetwork: action.vault!.chainName,
             vaultAddress: action.vault!.address,
+            vaultChainId: action.vault!.chainId,
           })
         );
         router.push(`/request/${data.requestId}`);
