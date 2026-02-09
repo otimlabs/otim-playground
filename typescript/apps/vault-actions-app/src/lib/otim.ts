@@ -33,6 +33,7 @@ export async function deposit(params: {
 }) {
   const client = await getClient();
 
+
   // acceptedTokens: the user's payment token + the vault's underlying token on its chain
   const acceptedTokens: Record<number, `0x${string}`[]> = {};
 
@@ -58,6 +59,7 @@ export async function deposit(params: {
     maxRuns: 1,
   });
 
+
   return client.orchestration.create(payload);
 }
 
@@ -73,7 +75,6 @@ export async function withdraw(params: {
 
   const payload = prepareVaultWithdrawSettlement({
     vaultAddress: params.vaultAddress,
-    vaultUnderlyingToken: params.vaultUnderlyingToken,
     vaultChainId: params.vaultChainId as SupportedChainId,
     settlementChainId: params.settlementChainId as SupportedChainId,
     settlementToken: params.settlementToken,
