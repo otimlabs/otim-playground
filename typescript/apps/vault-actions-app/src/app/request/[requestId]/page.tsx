@@ -122,8 +122,6 @@ export default function RequestPage() {
     setTimeout(() => setCopied(false), 2000);
   };
 
-  const isTerminal = details?.status === "paid" || details?.status === "cancelled";
-
   return (
     <div className="min-h-screen bg-white text-zinc-900 font-sans">
       <div className="max-w-2xl mx-auto px-4 py-8">

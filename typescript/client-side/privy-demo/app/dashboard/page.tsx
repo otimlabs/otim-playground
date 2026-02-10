@@ -20,7 +20,7 @@ import { TransactionForm } from "./components/transaction-form";
 export default function Dashboard() {
   const router = useRouter();
   const { authenticated, logout, user } = usePrivy();
-  const { isDelegated, delegationStatus, isCheckingStatus, refreshStatus } =
+  const { isDelegated, delegationStatus, isCheckingStatus } =
     useDelegation();
 
   // Check if we have the Otim token

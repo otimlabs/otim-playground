@@ -44,7 +44,6 @@ async function create() {
   const payload = prepareVaultWithdrawSettlement({
     // Vault configuration
     vaultAddress,
-    vaultUnderlyingToken: USDC_BASE,
     vaultChainId: chains.base.id,
 
     // Settlement configuration (settle to USDT)
