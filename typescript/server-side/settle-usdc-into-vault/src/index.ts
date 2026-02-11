@@ -57,9 +57,6 @@ async function create() {
     // Recipient address for the vault shares
     recipientAddress,
 
-    // Minimum total shares required (set to 0 to accept any amount)
-    vaultMinTotalShares: BigInt(10),
-
     // Optional parameters
     note: "Vault deposit settlement from Otim SDK example",
     maxRuns: 1,

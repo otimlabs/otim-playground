@@ -62,8 +62,6 @@ async function create() {
     // Recipient address for the vault shares
     recipientAddress,
 
-    // Minimum total shares required (set to 0 to accept any amount)
-    vaultMinTotalShares: BigInt(0),
 
     // Optional parameters
     note: "Settle USDC into MSY vault (msUSD) on Ethereum mainnet",
