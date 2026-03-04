@@ -1,7 +1,7 @@
 {
-  "name": "settle-usdc-into-vault",
+  "name": "vault-migrate-morpho-base",
   "version": "1.0.0",
-  "description": "otim sdk server-side example: create vault deposit settlement orchestrations with the otim server client",
+  "description": "otim sdk server-side example: migrate between morpho USDC vaults on base (steakhouse prime → gauntlet prime)",
   "main": "index.js",
   "type": "module",
   "private": true,
@@ -19,7 +19,9 @@
     "settlement",
     "orchestration",
     "blockchain",
-    "vault"
+    "vault",
+    "migrate",
+    "morpho"
   ],
   "author": "",
   "license": "Apache-2.0",

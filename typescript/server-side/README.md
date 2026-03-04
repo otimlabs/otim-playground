@@ -56,6 +56,14 @@ Create a vault deposit settlement orchestration that collects USDC on Base and d
 - `pnpm dev:create` - Create a new vault deposit settlement orchestration
 - `pnpm dev:getDetails <request_id>` - Get details for a specific orchestration
 
+### vault-migrate-morpho-base
+
+Migrate between Morpho USDC vaults on Base — withdraw from Steakhouse Prime USDC (`0xBEEFE94c8aD530842bfE7d8B397938fFc1cb83b2`) and deposit into Gauntlet USDC Prime (`0xeE8F4eC5672F09119b96Ab6fB59C27E1b7e44b61`). The auto-build route handles any token conversions needed between vaults.
+
+**Commands:**
+- `pnpm dev:create` - Create a new vault migrate settlement orchestration
+- `pnpm dev:getDetails <request_id>` - Get details for a specific orchestration
+
 ### withdraw-usdt-from-usdc-vault
 
 Withdraw USDC from an ERC-4626 vault on Base and settle as USDT to a recipient.
