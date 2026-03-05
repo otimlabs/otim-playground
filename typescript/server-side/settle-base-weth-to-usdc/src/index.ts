@@ -42,6 +42,7 @@ async function create() {
     acceptedTokens: {
       [chains.base.id]: [
         BASE_WETH, // WETH on Base
+        BASE_USDC, // USDC on Base (settlement token must be included)
       ],
     },
     note: "WETH to USDC settlement on Base for off-ramp",

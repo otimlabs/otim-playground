@@ -9,8 +9,8 @@ importers:
   .:
     dependencies:
       '@otim/sdk-server':
-        specifier: ^0.0.19
-        version: 0.0.19(@tanstack/query-core@5.90.20)(@tanstack/react-query@5.90.21(react@19.2.4))(@wagmi/core@3.4.0(@tanstack/query-core@5.90.20)(ox@0.12.4(typescript@5.9.3)(zod@4.3.6))(react@19.2.4)(typescript@5.9.3)(use-sync-external-store@1.4.0(react@19.2.4))(viem@2.46.3(typescript@5.9.3)(zod@4.3.6)))(ox@0.12.4(typescript@5.9.3)(zod@4.3.6))(react@19.2.4)(typescript@5.9.3)(use-sync-external-store@1.4.0(react@19.2.4))(viem@2.46.3(typescript@5.9.3)(zod@4.3.6))
+        specifier: ^0.0.20
+        version: 0.0.20(@tanstack/query-core@5.90.20)(@tanstack/react-query@5.90.21(react@19.2.4))(@wagmi/core@3.4.0(@tanstack/query-core@5.90.20)(ox@0.12.4(typescript@5.9.3)(zod@4.3.6))(react@19.2.4)(typescript@5.9.3)(use-sync-external-store@1.4.0(react@19.2.4))(viem@2.46.3(typescript@5.9.3)(zod@4.3.6)))(ox@0.12.4(typescript@5.9.3)(zod@4.3.6))(react@19.2.4)(typescript@5.9.3)(use-sync-external-store@1.4.0(react@19.2.4))(viem@2.46.3(typescript@5.9.3)(zod@4.3.6))
       viem:
         specifier: ^2.39.3
         version: 2.46.3(typescript@5.9.3)(zod@4.3.6)
@@ -265,23 +265,23 @@ packages:
   '@openzeppelin/contracts@5.6.1':
     resolution: {integrity: sha512-Ly6SlsVJ3mj+b18W3R8gNufB7dTICT105fJhodGAGgyC2oqnBAhqSiNDJ8V8DLY05cCz81GLI0CU5vNYA1EC/w==}
 
-  '@otim/sdk-core@0.0.19':
-    resolution: {integrity: sha512-Ex0+0/ctMeNKeUSmVV0FkAebckH3k/oTl991xZMAZKLQB+UDINIE43XeuNqUEHWbN139dfI5+aVovh4gapNi4Q==}
+  '@otim/sdk-core@0.0.20':
+    resolution: {integrity: sha512-+PCCRYqL3u366dWWW7ObkqXvP0tcY8L8PnmwgokkRv4gBSey+U2XV7j7fWFiSeixbcqaGyMIbleLH+DDi6A45g==}
     engines: {node: '>=18.0.0'}
     peerDependencies:
       typescript: '>=5.0.4'
       viem: 2.x
 
-  '@otim/sdk-server@0.0.19':
-    resolution: {integrity: sha512-w6eCjQgPDP7MNp//9VvQqlH6Gj7z0Ds2mneddyhbUtf9+v80O3oh5MRY5Yt+ir3lvrZpLVAbf7r5858zHglJqQ==}
+  '@otim/sdk-server@0.0.20':
+    resolution: {integrity: sha512-3Gqw6c2CJ5TTOkM9cFdjz47QvbXWBwRmWDzhV2vktJqvr+MM8oeiR8bMa0I2psyfj5LefzP0G43afUFSMA4tcA==}
     engines: {node: '>=18.0.0'}
     peerDependencies:
       '@wagmi/core': 2.x
       typescript: '>=5.0.4'
       viem: 2.x
 
-  '@otim/utils@0.0.12':
-    resolution: {integrity: sha512-k3JNcN7YwWyqCLYQF7Y20cvwL6YfIj6G+En/qLsovYJrqKsGscSGXhqwlh4Y/N5+DPWa3/+2sGcBcGfEkyk+xw==}
+  '@otim/utils@0.0.13':
+    resolution: {integrity: sha512-XJ4hBBfmc+gPDM0C1O9XlMsDs5SIfUyFeFQpg9C3kQoapxD+NOfrlXyx/XytRUZs/A0bsHMGZ+xLSzh0zKH4tg==}
     engines: {node: '>=18.0.0'}
     peerDependencies:
       react: ^18.0.0 || ^19.0.0
@@ -1319,9 +1319,9 @@ snapshots:
 
   '@openzeppelin/contracts@5.6.1': {}
 
-  '@otim/sdk-core@0.0.19(@tanstack/query-core@5.90.20)(@tanstack/react-query@5.90.21(react@19.2.4))(ox@0.12.4(typescript@5.9.3)(zod@4.3.6))(react@19.2.4)(typescript@5.9.3)(use-sync-external-store@1.4.0(react@19.2.4))(viem@2.46.3(typescript@5.9.3)(zod@4.3.6))':
+  '@otim/sdk-core@0.0.20(@tanstack/query-core@5.90.20)(@tanstack/react-query@5.90.21(react@19.2.4))(ox@0.12.4(typescript@5.9.3)(zod@4.3.6))(react@19.2.4)(typescript@5.9.3)(use-sync-external-store@1.4.0(react@19.2.4))(viem@2.46.3(typescript@5.9.3)(zod@4.3.6))':
     dependencies:
-      '@otim/utils': 0.0.12(@tanstack/query-core@5.90.20)(@tanstack/react-query@5.90.21(react@19.2.4))(ox@0.12.4(typescript@5.9.3)(zod@4.3.6))(react@19.2.4)(typescript@5.9.3)
+      '@otim/utils': 0.0.13(@tanstack/query-core@5.90.20)(@tanstack/react-query@5.90.21(react@19.2.4))(ox@0.12.4(typescript@5.9.3)(zod@4.3.6))(react@19.2.4)(typescript@5.9.3)
       '@t3-oss/env-core': 0.13.10(typescript@5.9.3)(zod@4.3.6)
       '@turnkey/api-key-stamper': 0.5.0
       '@turnkey/core': 1.12.0(typescript@5.9.3)(zod@4.3.6)
@@ -1381,10 +1381,10 @@ snapshots:
       - utf-8-validate
       - valibot
 
-  '@otim/sdk-server@0.0.19(@tanstack/query-core@5.90.20)(@tanstack/react-query@5.90.21(react@19.2.4))(@wagmi/core@3.4.0(@tanstack/query-core@5.90.20)(ox@0.12.4(typescript@5.9.3)(zod@4.3.6))(react@19.2.4)(typescript@5.9.3)(use-sync-external-store@1.4.0(react@19.2.4))(viem@2.46.3(typescript@5.9.3)(zod@4.3.6)))(ox@0.12.4(typescript@5.9.3)(zod@4.3.6))(react@19.2.4)(typescript@5.9.3)(use-sync-external-store@1.4.0(react@19.2.4))(viem@2.46.3(typescript@5.9.3)(zod@4.3.6))':
+  '@otim/sdk-server@0.0.20(@tanstack/query-core@5.90.20)(@tanstack/react-query@5.90.21(react@19.2.4))(@wagmi/core@3.4.0(@tanstack/query-core@5.90.20)(ox@0.12.4(typescript@5.9.3)(zod@4.3.6))(react@19.2.4)(typescript@5.9.3)(use-sync-external-store@1.4.0(react@19.2.4))(viem@2.46.3(typescript@5.9.3)(zod@4.3.6)))(ox@0.12.4(typescript@5.9.3)(zod@4.3.6))(react@19.2.4)(typescript@5.9.3)(use-sync-external-store@1.4.0(react@19.2.4))(viem@2.46.3(typescript@5.9.3)(zod@4.3.6))':
     dependencies:
-      '@otim/sdk-core': 0.0.19(@tanstack/query-core@5.90.20)(@tanstack/react-query@5.90.21(react@19.2.4))(ox@0.12.4(typescript@5.9.3)(zod@4.3.6))(react@19.2.4)(typescript@5.9.3)(use-sync-external-store@1.4.0(react@19.2.4))(viem@2.46.3(typescript@5.9.3)(zod@4.3.6))
-      '@otim/utils': 0.0.12(@tanstack/query-core@5.90.20)(@tanstack/react-query@5.90.21(react@19.2.4))(ox@0.12.4(typescript@5.9.3)(zod@4.3.6))(react@19.2.4)(typescript@5.9.3)
+      '@otim/sdk-core': 0.0.20(@tanstack/query-core@5.90.20)(@tanstack/react-query@5.90.21(react@19.2.4))(ox@0.12.4(typescript@5.9.3)(zod@4.3.6))(react@19.2.4)(typescript@5.9.3)(use-sync-external-store@1.4.0(react@19.2.4))(viem@2.46.3(typescript@5.9.3)(zod@4.3.6))
+      '@otim/utils': 0.0.13(@tanstack/query-core@5.90.20)(@tanstack/react-query@5.90.21(react@19.2.4))(ox@0.12.4(typescript@5.9.3)(zod@4.3.6))(react@19.2.4)(typescript@5.9.3)
       '@t3-oss/env-core': 0.13.10(typescript@5.9.3)(zod@4.3.6)
       '@turnkey/api-key-stamper': 0.5.0
       '@turnkey/core': 1.12.0(typescript@5.9.3)(zod@4.3.6)
@@ -1443,7 +1443,7 @@ snapshots:
       - utf-8-validate
       - valibot
 
-  '@otim/utils@0.0.12(@tanstack/query-core@5.90.20)(@tanstack/react-query@5.90.21(react@19.2.4))(ox@0.12.4(typescript@5.9.3)(zod@4.3.6))(react@19.2.4)(typescript@5.9.3)':
+  '@otim/utils@0.0.13(@tanstack/query-core@5.90.20)(@tanstack/react-query@5.90.21(react@19.2.4))(ox@0.12.4(typescript@5.9.3)(zod@4.3.6))(react@19.2.4)(typescript@5.9.3)':
     dependencies:
       '@maskito/core': 5.1.1
       '@maskito/kit': 5.1.1(@maskito/core@5.1.1)
@@ -1566,7 +1566,7 @@ snapshots:
 
   '@scure/bip32@1.7.0':
     dependencies:
-      '@noble/curves': 1.9.1
+      '@noble/curves': 1.9.7
       '@noble/hashes': 1.8.0
       '@scure/base': 1.2.6
 
@@ -1595,7 +1595,7 @@ snapshots:
 
   '@turnkey/api-key-stamper@0.6.2':
     dependencies:
-      '@noble/curves': 1.8.0
+      '@noble/curves': 1.9.7
       '@turnkey/crypto': 2.8.11
       '@turnkey/encoding': 0.6.0
       sha256-uint8array: 0.10.7
