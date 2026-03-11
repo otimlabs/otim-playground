@@ -1,0 +1,83 @@
+import {
+  chains,
+  createOtimServerClient,
+  prepareVaultDepositSettlement,
+} from "@otim/sdk-server";
+import dotenv from "dotenv";
+
+dotenv.config();
+
+// USDC token address on Ethereum mainnet
+const USDC_MAINNET =
+  "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48" as `0x${string}`;
+
+// aUSD (Agora Dollar) token address on Ethereum mainnet
+const AUSD_MAINNET =
+  "0x00000000efe302beaa2b3e6e1b18d08d69a9012a" as `0x${string}`;
+
+// aUSD vault address on Ethereum mainnet
+const AUSD_VAULT =
+  "0xE7F8Fb5CccC3e70B922FE696ae6B550557f88Da5" as `0x${string}`;
+
+async function initializeClient() {
+  const client = createOtimServerClient({
+    appId: process.env.OTIM_APP_ID!,
+    privateKey: process.env.OTIM_PRIVATE_KEY! as `0x${string}`,
+    publicKey: process.env.OTIM_PUBLIC_KEY!,
+    apiKey: process.env.OTIM_API_KEY,
+    environment: "production",
+  });
+
+  await client.init();
+  return client;
+}
+
+async function create() {
+  const client = await initializeClient();
+  const recipientAddress = process.env.RECIPIENT_ADDRESS as `0x${string}`;
+
+  if (!recipientAddress) {
+    throw new Error(
+      "Missing required environment variable: RECIPIENT_ADDRESS",
+    );
+  }
+
+  // Prepare a vault deposit settlement
+  // This will accept USDC on Ethereum mainnet, auto-build the route to aUSD,
+  // and deposit into the aUSD vault
+  const payload = prepareVaultDepositSettlement({
+    // Accepted tokens for payment: USDC on Ethereum mainnet
+    acceptedTokens: {
+      [chains.mainnet.id]: [USDC_MAINNET],
+    },
+
+    // Vault configuration
+    vaultChainId: chains.mainnet.id,
+    vaultAddress: AUSD_VAULT,
+    vaultUnderlyingToken: AUSD_MAINNET,
+
+    // Deposit amount: 1 aUSD (6 decimals)
+    depositAmount: BigInt(1_000_000),
+
+    // Recipient address for the vault shares
+    recipientAddress,
+
+    // Optional parameters
+    note: "Settle USDC into aUSD vault on Ethereum mainnet",
+    maxRuns: 1,
+  });
+
+  const result = await client.orchestration.create(payload);
+
+  console.log(JSON.stringify(result, null, 2));
+}
+
+async function getDetails(requestId: string) {
+  const client = await initializeClient();
+  const details = await client.orchestration.getDetails({ requestId });
+  console.log(JSON.stringify(details, null, 2));
+}
+
+const command = process.argv[2];
+if (command === "create") await create();
+else if (command === "getDetails") await getDetails(process.argv[3]);
